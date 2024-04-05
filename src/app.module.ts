@@ -1,21 +1,11 @@
 import { Module } from '@nestjs/common'
 import { ScheduleModule } from '@nestjs/schedule'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
-import { PrismaModule } from './Prisma/prisma.module'
-import { CriptoDataModule } from './CriptoData/CriptoData.module'
-import { CriptoDataController } from './CriptoData/CriptoData.controller'
-import { CriptoDataService } from './CriptoData/CriptoData.service'
-import { TeamEditCriptoDataModule } from './TeamEditCriptoData/TeamEditCriptoData.module'
+import { AdminModule } from './modules/Admin/admin.module'
+import { ClientModule } from './modules/Client/client.module'
 
 @Module({
-  imports: [
-    PrismaModule,
-    CriptoDataModule,
-    TeamEditCriptoDataModule,
-    ScheduleModule.forRoot(),
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [ScheduleModule.forRoot(), AdminModule, ClientModule],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

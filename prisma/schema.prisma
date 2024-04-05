@@ -13,16 +13,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model CriptoData {
-  id             String  @id @default(uuid())
-  idCMC          Int     @unique
-  ticker         String?
-  entrada        String?
-  precoAtual     String?
-  alocacao       String?
-  alocacaoAtual  String?
-  rentabilidade  String?
-  vies           String?
-  quantidade     String?
-  valorInvestido String?
+enum Roles {
+  USER
+  ADMIN
+}
+
+model Cripto_data {
+  id                String              @id @default(uuid())
+  idCMC             Int                 @unique
+  ticker            String?
+  entrada           String?
+  precoAtual        String?
+  alocacao          String?
+  alocacaoAtual     String?
+  rentabilidade     String?
+  vies              String?
+  quantidade        String?
+  valorInvestido    String?
+  isVisible Boolean @default(false)
+  updateAt DateTime @updatedAt
+  Historic_buy_sell Historic_buy_sell[]
+}
+
+model Historic_buy_sell {
+  id       String      @id @default(uuid())
+  criptoId String
+  qnt      Float
+  createAt DateTime    @default(now())
+  Cripto   Cripto_data @relation(fields: [criptoId], references: [id])
+}
+
+model User {
+  id           String  @id @default(uuid())
+  name         String?
+  email        String
+  password     String?
+  isValid      Boolean
+  isFirstAcess Boolean @default(true)
+  role         Roles   @default(USER)
 }
