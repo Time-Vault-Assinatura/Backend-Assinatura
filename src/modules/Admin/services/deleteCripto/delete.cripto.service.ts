@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { AdminDeleteModel } from '../../models/admin.delete'
+import { AdminUpdateModel } from '../../models/admin.update'
 import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class DeleteCriptoService {
-  constructor(private readonly adminDeleteModel: AdminDeleteModel) {}
+  constructor(
+    private readonly adminDeleteModel: AdminDeleteModel,
+    private readonly adminUpdateModel: AdminUpdateModel,
+  ) {}
 
   async deleteCripto(idCMC: number) {
     try {
@@ -23,7 +27,11 @@ export class DeleteCriptoService {
 
   async deleteBuyAndSell(id: string) {
     try {
-      return await this.adminDeleteModel.deleteBuyAndSell(id)
+      await this.adminDeleteModel.deleteBuyAndSell(id)
+      await this.adminUpdateModel.updateCriptoQuantity()
+      return {
+        message: `A criptomoeda com id = ${id} , foi deletada com sucesso!`,
+      }
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {

@@ -24,7 +24,7 @@ export class UpdateCriptoService {
     }
 
     try {
-      await this.adminUpdateModel.UpdateCriptoEntryAndAllocation(
+      await this.adminUpdateModel.updateCriptoEntryAndAllocation(
         criptoDetails.idCMC,
         updateData.entrada,
         updateData.alocacao,

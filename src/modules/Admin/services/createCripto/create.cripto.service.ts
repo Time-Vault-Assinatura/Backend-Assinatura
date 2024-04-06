@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { AdminCreateModel } from '../../models/admin.create'
+import { AdminUpdateModel } from '../../models/admin.update'
 import { AutomaticCronService } from '../automaticCron/automaticCron.service'
 import { Prisma } from '@prisma/client'
 
@@ -8,6 +9,7 @@ export class CreateCriptoService {
   constructor(
     private readonly adminCreateModel: AdminCreateModel,
     private readonly AutomaticCronService: AutomaticCronService,
+    private readonly adminUpdateModel: AdminUpdateModel,
   ) {}
 
   async addCriptoDataIds(idsCMC: number[]) {
@@ -42,6 +44,7 @@ export class CreateCriptoService {
   async addBuyAndSell(criptoId: string, qnt: number) {
     try {
       await this.adminCreateModel.addBuyAndSell(criptoId, qnt)
+      await this.adminUpdateModel.updateCriptoQuantity()
       return {
         message: `A cripto ${criptoId} foi comprada ou vendida na quantidade de ${qnt}`,
       }

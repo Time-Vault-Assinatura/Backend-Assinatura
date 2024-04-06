@@ -141,7 +141,7 @@ export class AutomaticCronService {
     }
   }
 
-  @Cron(CronExpression.EVERY_12_HOURS)
+  @Cron(CronExpression.EVERY_10_SECONDS)
   async handleCron() {
     await this.fetchAndSaveCryptocurrencyData()
     await this.updateVies()

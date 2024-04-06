@@ -50,7 +50,7 @@ export class AdminUpdateModel {
     })
   }
 
-  async UpdateCriptoEntryAndAllocation(
+  async updateCriptoEntryAndAllocation(
     idCMC: number,
     entrada: string,
     alocacao: string,
@@ -70,6 +70,26 @@ export class AdminUpdateModel {
     } catch (error) {
       console.error('Erro ao atualizar detalhes da criptomoeda:', error)
       throw error
+    }
+  }
+
+  async updateCriptoQuantity() {
+    const criptos = await this.prismaService.cripto_data.findMany({
+      include: {
+        Historic_buy_sell: true, // Inclui os dados relacionados de Historic_buy_sell
+      },
+    })
+
+    for (const cripto of criptos) {
+      const somaQnt = cripto.Historic_buy_sell.reduce(
+        (acc, curr) => acc + curr.qnt,
+        0,
+      )
+
+      await this.prismaService.cripto_data.update({
+        where: { id: cripto.id },
+        data: { quantidade: somaQnt.toString() }, // Atualiza a quantidade na tabela Cripto_data
+      })
     }
   }
 }
