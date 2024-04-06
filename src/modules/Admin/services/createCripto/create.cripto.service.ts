@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { AdminCreateModel } from '../../models/admin.create'
 import { AdminUpdateModel } from '../../models/admin.update'
+import { AdminReadModel } from '../../models/admin.read'
 import { AutomaticCronService } from '../automaticCron/automaticCron.service'
 import { Prisma } from '@prisma/client'
 
@@ -10,6 +11,7 @@ export class CreateCriptoService {
     private readonly adminCreateModel: AdminCreateModel,
     private readonly AutomaticCronService: AutomaticCronService,
     private readonly adminUpdateModel: AdminUpdateModel,
+    private readonly adminReadModel: AdminReadModel,
   ) {}
 
   async addCriptoDataIds(idsCMC: number[]) {
@@ -42,6 +44,7 @@ export class CreateCriptoService {
   }
 
   async addBuyAndSell(criptoId: string, qnt: number) {
+    // precisa adicionar uma validação para garantir que o id da cripto exista
     try {
       await this.adminCreateModel.addBuyAndSell(criptoId, qnt)
       await this.adminUpdateModel.updateCriptoQuantity()

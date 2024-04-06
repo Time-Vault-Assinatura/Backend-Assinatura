@@ -32,6 +32,7 @@ model Cripto_data {
   valorInvestido    String?
   isVisible Boolean @default(false)
   updateAt DateTime @updatedAt
+  lastAutoUpdate String?
   Historic_buy_sell Historic_buy_sell[]
 }
 
