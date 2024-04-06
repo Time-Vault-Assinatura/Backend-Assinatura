@@ -62,4 +62,24 @@ export class AdminController {
       ...body,
     })
   }
+
+  @Post('buy-sell/add')
+  async addBuyAndSell(@Body() body: { criptoId: string; qnt: number }) {
+    return await this.createCriptoService.addBuyAndSell(body.criptoId, body.qnt)
+  }
+
+  @Delete('buy-sell/delete')
+  async deleteBuyAndSell(@Body() body: { id: string }) {
+    return await this.deleteCriptoService.deleteBuyAndSell(body.id)
+  }
+
+  @Get('buy-sell/get-all')
+  async getAllBuyAndSell() {
+    return await this.readCriptoService.getAllBuyAndSell()
+  }
+
+  @Get('buy-sell/get-filtred')
+  async getFiltredBuyAndSell(@Body() body: { criptoId: string }) {
+    return await this.readCriptoService.getFiltredBuyAndSell(body.criptoId)
+  }
 }

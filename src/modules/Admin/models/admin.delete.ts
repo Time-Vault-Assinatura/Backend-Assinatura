@@ -22,4 +22,15 @@ export class AdminDeleteModel {
       }
     }
   }
+
+  async deleteBuyAndSell(id: string) {
+    try {
+      return await this.prismaService.historic_buy_sell.delete({
+        where: { id },
+      })
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
+  }
 }

@@ -15,4 +15,23 @@ export class ReadCriptoService {
 
     return allCriptoData
   }
+
+  async getAllBuyAndSell() {
+    const allBuyAndSell = await this.adminReadModel.getAllBuyAndSell()
+
+    if (allBuyAndSell.length === 0) {
+      return 'Nenhuma compra e venda encontrada'
+    }
+    return allBuyAndSell
+  }
+
+  async getFiltredBuyAndSell(criptoId: string) {
+    const filtredBuyAndSell =
+      await this.adminReadModel.getFiltredBuyAndSell(criptoId)
+
+    if (filtredBuyAndSell.length === 0) {
+      return 'Nenhuma compra e venda encontrada para essa moeda'
+    }
+    return filtredBuyAndSell
+  }
 }

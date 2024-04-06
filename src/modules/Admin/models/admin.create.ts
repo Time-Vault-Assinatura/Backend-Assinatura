@@ -25,4 +25,16 @@ export class AdminCreateModel {
       throw error
     }
   }
+
+  async addBuyAndSell(criptoId: string, qnt: number) {
+    try {
+      const result = await this.prismaService.historic_buy_sell.createMany({
+        data: [{ criptoId, qnt }], // Note que data espera um array de objetos
+      })
+      return result
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
+  }
 }

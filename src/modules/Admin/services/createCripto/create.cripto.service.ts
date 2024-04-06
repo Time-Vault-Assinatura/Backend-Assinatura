@@ -38,4 +38,15 @@ export class CreateCriptoService {
       }
     }
   }
+
+  async addBuyAndSell(criptoId: string, qnt: number) {
+    try {
+      await this.adminCreateModel.addBuyAndSell(criptoId, qnt)
+      return {
+        message: `A cripto ${criptoId} foi comprada ou vendida na quantidade de ${qnt}`,
+      }
+    } catch (error) {
+      throw new Error('Erro')
+    }
+  }
 }

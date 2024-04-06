@@ -50,4 +50,25 @@ export class AdminReadModel {
 
     return criptoDatas
   }
+
+  async getAllBuyAndSell() {
+    try {
+      const allBuyAndSell =
+        await this.prismaService.historic_buy_sell.findMany()
+      return allBuyAndSell
+    } catch (error) {
+      console.error('Error ao buscar compras e vendas:', error)
+      throw error
+    }
+  }
+
+  async getFiltredBuyAndSell(criptoId: string) {
+    const filtredBuyAndSell =
+      await this.prismaService.historic_buy_sell.findMany({
+        where: {
+          criptoId,
+        },
+      })
+    return filtredBuyAndSell
+  }
 }
