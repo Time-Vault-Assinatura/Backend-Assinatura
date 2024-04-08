@@ -47,9 +47,9 @@ model Historic_buy_sell {
 model User {
   id           String  @id @default(uuid())
   name         String?
-  email        String
+  email        String @unique
   password     String?
-  isValid      Boolean
+  isValid      Boolean @default(false)
   isFirstAcess Boolean @default(true)
   role         Roles   @default(USER)
 }
