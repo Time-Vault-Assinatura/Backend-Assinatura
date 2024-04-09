@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common'
+import { JwtModule } from '@nestjs/jwt'
+
 import { AuthController } from './auth.controller'
 import { AuthServiceModule } from './service/service.auth.module'
-import { JwtModule } from '@nestjs/jwt'
 
 @Module({
   imports: [
