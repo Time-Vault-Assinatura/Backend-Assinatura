@@ -22,11 +22,14 @@
   "dependencies": {
     "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/schedule": "^4.0.1",
     "@prisma/client": "^5.11.0",
+    "bcrypt": "^5.1.1",
+    "nestjs-resend": "^0.0.3",
     "ngrok": "^5.0.0-beta.2",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
