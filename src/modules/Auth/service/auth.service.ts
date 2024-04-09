@@ -3,13 +3,14 @@ import { CreateTokenService } from './token/create-token.service'
 import { AuthReadModel } from '../models/auth.read'
 import { ResendService } from 'nestjs-resend'
 import * as bcrypt from 'bcrypt'
+import { MailerService } from '@nestjs-modules/mailer'
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly createTokenService: CreateTokenService,
     private readonly authReadModel: AuthReadModel,
-    private readonly resendService: ResendService,
+    private readonly mailer: MailerService,
   ) {}
 
   async login({ email, password }) {
@@ -78,11 +79,50 @@ export class AuthService {
   }
 
   async resetPassword({ email }) {
-    await this.resendService.send({
-      from: 'abner.barbosa@sou.inteli.edu.br',
-      to: email,
-      subject: 'hello world',
-      html: '<strong>it works!</strong>',
+    const user = await this.authReadModel.findUserByEmail(email)
+    let token: { accessToken: string }
+
+    if (!user) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Usuário não encontrado',
+        },
+        HttpStatus.NOT_FOUND,
+      )
+    }
+
+    if (!user.isValid) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Acesso negado 🥶',
+        },
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+
+    switch (user.role) {
+      case 'USER':
+        token = this.createTokenService.execute(user.id, '30m', 'user')
+        break
+
+      case 'ADMIN':
+        token = this.createTokenService.execute(user.id, '30m', 'admin')
+        break
+    }
+
+    // this.resendService.send({
+    //   from: 'abnerdruns@gmail.com',
+    //   to: user.email,
+    //   subject: 'hello world',
+    //   html: `<strong>it works! token: ${token.accessToken}</strong>`,
+    // })
+
+    this.mailer.sendMail({
+      to: user.email,
+      subject: 'Hora de recuperar a sua senha',
+      html: `<strong>it works! token: ${token.accessToken}</strong>`,
     })
   }
 }
