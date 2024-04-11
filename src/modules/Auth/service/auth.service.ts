@@ -18,11 +18,6 @@ export class AuthService {
   async login({ email, password }) {
     const user = await this.authReadModel.findUserByEmail(email)
 
-    const resultPassword: boolean = await bcrypt.compare(
-      password,
-      user.password,
-    )
-
     if (!user) {
       throw new HttpException(
         {
@@ -31,6 +26,10 @@ export class AuthService {
         },
         HttpStatus.NOT_FOUND,
       )
+    }
+
+    if (!user.password) {
+      throw new Error('Usuário encontrado, mas sem senha registrada.')
     }
 
     if (!user.isValid) {
@@ -42,6 +41,11 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       )
     }
+
+    const resultPassword: boolean = await bcrypt.compare(
+      password,
+      user.password,
+    )
 
     if (!resultPassword) {
       throw new HttpException(
