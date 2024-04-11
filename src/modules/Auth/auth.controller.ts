@@ -33,10 +33,10 @@ export class AuthController {
     return await this.authService.resetPassword(body)
   }
 
-  @UseGuards(AuthGuardUser)
+  @UseGuards(AuthGuardAdmin)
   @Post('check-token')
   @HttpCode(200)
-  async checkToken(@Body() body: { token: string }) {
+  async checkTokenAdmin(@Body() body: { token: string }) {
     if (this.validTokenService.admin(body.token) !== true)
       throw new HttpException(
         {
@@ -47,6 +47,22 @@ export class AuthController {
       )
 
     return this.validTokenService.admin(body.token)
+  }
+
+  @UseGuards(AuthGuardUser)
+  @Post('check-token')
+  @HttpCode(200)
+  async checkTokenUser(@Body() body: { token: string }) {
+    if (this.validTokenService.admin(body.token) !== true)
+      throw new HttpException(
+        {
+          status: 401,
+          error: 'Token invalido',
+        },
+        401,
+      )
+
+    return this.validTokenService.user(body.token)
   }
 
   @Post('generate-token-user')
@@ -65,5 +81,10 @@ export class AuthController {
       '2h',
       'admin',
     )
+  }
+
+  @Post('create-password')
+  async createPassword(@Body() body: { email: string; newPassword: string }) {
+    return await this.authService.createPassword(body.email, body.newPassword)
   }
 }

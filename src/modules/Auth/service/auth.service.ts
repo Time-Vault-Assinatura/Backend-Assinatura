@@ -4,6 +4,7 @@ import { AuthReadModel } from '../models/auth.read'
 import { ResendService } from 'nestjs-resend'
 import * as bcrypt from 'bcrypt'
 import { MailerService } from '@nestjs-modules/mailer'
+import { AuthCreateModel } from '../models/auth.create'
 
 @Injectable()
 export class AuthService {
@@ -11,6 +12,7 @@ export class AuthService {
     private readonly createTokenService: CreateTokenService,
     private readonly authReadModel: AuthReadModel,
     private readonly mailer: MailerService,
+    private readonly authCreateModel: AuthCreateModel,
   ) {}
 
   async login({ email, password }) {
@@ -124,5 +126,36 @@ export class AuthService {
       subject: 'Hora de recuperar a sua senha',
       html: `<strong>it works! token: ${token.accessToken}</strong>`,
     })
+  }
+
+  async createPassword(email: string, newPassword: string) {
+    const user = await this.authReadModel.findUserByEmail(email)
+
+    if (!user) {
+      throw new HttpException(
+        { status: HttpStatus.NOT_FOUND, error: 'Usuário não encontrado' },
+        HttpStatus.NOT_FOUND,
+      )
+    }
+
+    if (!user.isValid) {
+      throw new HttpException(
+        { status: HttpStatus.BAD_REQUEST, error: 'Usuário não está ativo' },
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+
+    if (!user.isFirstAcess) {
+      throw new HttpException(
+        { status: HttpStatus.BAD_REQUEST, error: 'Usuário já definiu a senha' },
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+    await this.authCreateModel.createPassword(email, hashedPassword, false)
+
+    return { status: 'success', message: 'Senha criada com sucesso' }
   }
 }
