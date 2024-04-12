@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpException,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common'
 import { ValidTokenService } from './service/token/valid-token.service'
@@ -34,7 +35,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuardAdmin)
-  @Post('check-token')
+  @Post('check-token-admin')
   @HttpCode(200)
   async checkTokenAdmin(@Body() body: { token: string }) {
     if (this.validTokenService.admin(body.token) !== true)
@@ -50,19 +51,33 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuardUser)
-  @Post('check-token')
+  @Post('check-token-user')
   @HttpCode(200)
-  async checkTokenUser(@Body() body: { token: string }) {
-    if (this.validTokenService.user(body.token) !== true)
+  async checkTokenUser(@Req() req) {
+    const authHeader = req.headers.authorization
+    const token = authHeader && authHeader.split(' ')[1] // Assume Bearer token
+    if (!token) {
       throw new HttpException(
         {
           status: 401,
-          error: 'Token invalido',
+          error: 'Token não fornecido',
         },
         401,
       )
+    }
 
-    return this.validTokenService.user(body.token)
+    const isValid = this.validTokenService.user(token)
+    if (!isValid) {
+      throw new HttpException(
+        {
+          status: 401,
+          error: 'Token inválido',
+        },
+        401,
+      )
+    }
+
+    return { isValid }
   }
 
   @Post('create-password')
