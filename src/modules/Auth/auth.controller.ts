@@ -53,7 +53,7 @@ export class AuthController {
   @Post('check-token')
   @HttpCode(200)
   async checkTokenUser(@Body() body: { token: string }) {
-    if (this.validTokenService.admin(body.token) !== true)
+    if (this.validTokenService.user(body.token) !== true)
       throw new HttpException(
         {
           status: 401,
@@ -63,24 +63,6 @@ export class AuthController {
       )
 
     return this.validTokenService.user(body.token)
-  }
-
-  @Post('generate-token-user')
-  async generateTokenTest() {
-    return this.createTokenService.execute(
-      '9f23ff21-7488-46bc-bd6c-0dfa143313e6',
-      '2h',
-      'user',
-    )
-  }
-
-  @Post('generate-token-admin')
-  async generateTokenAdmin() {
-    return this.createTokenService.execute(
-      '9f23ff21-7488-46bc-bd6c-0dfa143313e6',
-      '2h',
-      'admin',
-    )
   }
 
   @Post('create-password')
