@@ -21,4 +21,18 @@ export class ClientReadModel {
       throw error
     }
   }
+
+  async getUserData(email: string) {
+    try {
+      const userData = await this.prismaService.user.findUnique({
+        where: {
+          email,
+        },
+      })
+      return userData
+    } catch (error) {
+      console.log('Error ao buscar dados de usuario:', error)
+      throw error
+    }
+  }
 }
