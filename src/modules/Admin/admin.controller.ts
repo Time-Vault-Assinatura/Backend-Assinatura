@@ -93,4 +93,13 @@ export class AdminController {
   async getFiltredBuyAndSell(@Body() body: { criptoId: string }) {
     return await this.readCriptoService.getFiltredBuyAndSell(body.criptoId)
   }
+
+  @UseGuards(AuthGuardAdmin)
+  @Patch('visibility/:id')
+  async updateVisibility(
+    @Param('id') id: string,
+    @Body('isVisible') isVisible: boolean,
+  ) {
+    return this.updateCriptoService.updateVisibility(id, isVisible)
+  }
 }

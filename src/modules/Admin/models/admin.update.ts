@@ -92,4 +92,20 @@ export class AdminUpdateModel {
       })
     }
   }
+
+  async updateCriptoDataVisibility(id: string, isVisible: boolean) {
+    try {
+      await this.prismaService.cripto_data.update({
+        where: {
+          id,
+        },
+        data: {
+          isVisible,
+        },
+      })
+    } catch (error) {
+      console.error('Erro ao atualizar visibilidade da cripto', error)
+      throw error
+    }
+  }
 }

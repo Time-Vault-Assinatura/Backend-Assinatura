@@ -34,4 +34,13 @@ export class UpdateCriptoService {
       throw error
     }
   }
+
+  async updateVisibility(id: string, isVisible: boolean) {
+    try {
+      await this.adminUpdateModel.updateCriptoDataVisibility(id, isVisible)
+    } catch (error) {
+      console.error('Error updating crypto visibility:', error)
+      throw error
+    }
+  }
 }
