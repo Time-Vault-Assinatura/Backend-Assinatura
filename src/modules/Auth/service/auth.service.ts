@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { CreateTokenService } from './token/create-token.service'
 import { AuthReadModel } from '../models/auth.read'
-import { ResendService } from 'nestjs-resend'
 import * as bcrypt from 'bcrypt'
 import { MailerService } from '@nestjs-modules/mailer'
 import { AuthCreateModel } from '../models/auth.create'
+import ResetPasswordHTML from '../../../templates/reset-password'
 
 @Injectable()
 export class AuthService {
@@ -128,7 +128,7 @@ export class AuthService {
     this.mailer.sendMail({
       to: user.email,
       subject: 'Hora de recuperar a sua senha',
-      html: `<strong>it works! token: ${token.accessToken}</strong>`,
+      html: ResetPasswordHTML(token.accessToken, user.name),
     })
   }
 
