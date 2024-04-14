@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt'
 import { MailerService } from '@nestjs-modules/mailer'
 import { AuthCreateModel } from '../models/auth.create'
 import ResetPasswordHTML from '../../../templates/reset-password'
+import { ValidTokenService } from './token/valid-token.service'
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
     private readonly authReadModel: AuthReadModel,
     private readonly mailer: MailerService,
     private readonly authCreateModel: AuthCreateModel,
+    private readonly validTokenService: ValidTokenService,
   ) {}
 
   async login({ email, password }) {
@@ -154,5 +156,31 @@ export class AuthService {
     await this.authCreateModel.createPassword(email, hashedPassword, false)
 
     return { status: 'success', message: 'Senha criada com sucesso' }
+  }
+
+  async updatePassword(email: string, token: string, newPassword: string) {
+    const user = await this.authReadModel.findUserByEmail(email)
+    if (!user) {
+      throw new HttpException(
+        { status: HttpStatus.NOT_FOUND, error: 'User not found' },
+        HttpStatus.NOT_FOUND,
+      )
+    }
+
+    // Usar o novo método para validar o token
+    const isValid = this.validTokenService.validateResetPasswordToken(
+      token,
+      user.id,
+    )
+    if (!isValid) {
+      throw new HttpException(
+        { status: HttpStatus.UNAUTHORIZED, error: 'Invalid or expired token' },
+        HttpStatus.UNAUTHORIZED,
+      )
+    }
+
+    // Se o token for válido, proceda com a atualização da senha
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+    return this.authCreateModel.createPassword(email, hashedPassword, false)
   }
 }

@@ -4,7 +4,9 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
+  Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common'
@@ -100,5 +102,14 @@ export class AuthController {
   @Post('create-password')
   async createPassword(@Body() body: { email: string; newPassword: string }) {
     return await this.authService.createPassword(body.email, body.newPassword)
+  }
+
+  @Patch('update-password')
+  async updatePassword(
+    @Query('token') token: string,
+    @Query('email') email: string,
+    @Body('newPassword') newPassword: string,
+  ) {
+    return this.authService.updatePassword(email, token, newPassword)
   }
 }
