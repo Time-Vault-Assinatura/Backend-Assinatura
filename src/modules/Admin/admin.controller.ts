@@ -29,6 +29,7 @@ export class AdminController {
     private readonly updateCriptoService: UpdateCriptoService,
   ) {}
 
+  @UseGuards(AuthGuardAdmin)
   @Get('getAll')
   async getAllCriptoData() {
     return await this.readCriptoService.getAllCriptoData()
