@@ -22,7 +22,7 @@ export class AuthService {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
-          error: 'Email ou senha incorretos',
+          error: 'Email incorreto',
         },
         HttpStatus.NOT_FOUND,
       )
@@ -36,7 +36,7 @@ export class AuthService {
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
-          error: 'Acesso negado 🥶',
+          error: 'Acesso negado',
         },
         HttpStatus.BAD_REQUEST,
       )
@@ -51,7 +51,7 @@ export class AuthService {
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
-          error: 'Email ou senha incorretos',
+          error: 'Senha incorreta',
         },
         HttpStatus.BAD_REQUEST,
       )
