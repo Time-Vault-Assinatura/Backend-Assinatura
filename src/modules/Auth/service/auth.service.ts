@@ -118,17 +118,10 @@ export class AuthService {
         break
     }
 
-    // this.resendService.send({
-    //   from: 'abnerdruns@gmail.com',
-    //   to: user.email,
-    //   subject: 'hello world',
-    //   html: `<strong>it works! token: ${token.accessToken}</strong>`,
-    // })
-
     this.mailer.sendMail({
       to: user.email,
-      subject: 'Hora de recuperar a sua senha',
-      html: ResetPasswordHTML(token.accessToken, user.name),
+      subject: 'Recupere a sua senha da assinatura Vault',
+      html: ResetPasswordHTML(token.accessToken, user.name, user.email),
     })
   }
 
