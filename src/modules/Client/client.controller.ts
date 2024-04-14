@@ -10,7 +10,7 @@ export class ClientController {
     private readonly userDataService: UserDataService,
   ) {}
 
-  //   @UseGuards(AuthGuardUser)
+  @UseGuards(AuthGuardUser)
   @Get('filtred-cripto')
   async getAllNonNullCriptoData() {
     return this.getAllCriptoService.getAllNonNullCriptoData()
