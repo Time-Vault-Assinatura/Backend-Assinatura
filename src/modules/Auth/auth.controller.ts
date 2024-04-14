@@ -3,6 +3,7 @@ import {
   Controller,
   HttpCode,
   HttpException,
+  HttpStatus,
   Post,
   Req,
   UseGuards,
@@ -37,17 +38,32 @@ export class AuthController {
   @UseGuards(AuthGuardAdmin)
   @Post('check-token-admin')
   @HttpCode(200)
-  async checkTokenAdmin(@Body() body: { token: string }) {
-    if (this.validTokenService.admin(body.token) !== true)
+  async checkTokenAdmin(@Req() req) {
+    const authHeader = req.headers.authorization
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (!token) {
       throw new HttpException(
         {
-          status: 401,
-          error: 'Token invalido',
+          status: HttpStatus.UNAUTHORIZED,
+          error: 'Token não fornecido',
         },
-        401,
+        HttpStatus.UNAUTHORIZED,
       )
+    }
 
-    return this.validTokenService.admin(body.token)
+    const isValid = this.validTokenService.admin(token)
+    if (!isValid) {
+      throw new HttpException(
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          error: 'Token inválido',
+        },
+        HttpStatus.UNAUTHORIZED,
+      )
+    }
+
+    return { isValid: true }
   }
 
   @UseGuards(AuthGuardUser)
@@ -56,13 +72,14 @@ export class AuthController {
   async checkTokenUser(@Req() req) {
     const authHeader = req.headers.authorization
     const token = authHeader && authHeader.split(' ')[1] // Assume Bearer token
+
     if (!token) {
       throw new HttpException(
         {
-          status: 401,
+          status: HttpStatus.UNAUTHORIZED,
           error: 'Token não fornecido',
         },
-        401,
+        HttpStatus.UNAUTHORIZED,
       )
     }
 
@@ -70,14 +87,14 @@ export class AuthController {
     if (!isValid) {
       throw new HttpException(
         {
-          status: 401,
+          status: HttpStatus.UNAUTHORIZED,
           error: 'Token inválido',
         },
-        401,
+        HttpStatus.UNAUTHORIZED,
       )
     }
 
-    return { isValid }
+    return { isValid: true }
   }
 
   @Post('create-password')
