@@ -15,46 +15,48 @@ export class AutomaticCronService {
 
   public async fetchAndSaveCryptocurrencyData() {
     const criptoDatas = await this.adminReadModel.getAllCriptoData()
-    const ids = criptoDatas.map((data) => data.idCMC.toString())
-    const convert = 'USD'
-    const baseUrl =
-      'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
-    const apiKey = process.env.CMC_API_KEY
-    const queryString = `?id=${ids.join(',')}&convert=${convert}`
-    const options = {
-      headers: { 'X-CMC_PRO_API_KEY': apiKey },
-    }
-
-    try {
-      const response = await firstValueFrom(
-        this.httpService.get(baseUrl + queryString, options),
-      )
-      const data = response.data
-
-      const values = ids
-        .map((id) => {
-          if (data.data && data.data[id]) {
-            const coinData = data.data[id]
-            return {
-              idCMC: coinData.id,
-              name: coinData.symbol,
-              price: coinData.quote[convert].price,
-            }
-          } else {
-            return null
-          }
-        })
-        .filter((v) => v !== null)
-
-      for (const value of values) {
-        await this.adminUpdateModel.updateCriptoNameAndPrice(
-          value.idCMC,
-          value.name,
-          value.price,
-        )
+    if (criptoDatas.length !== 0) {
+      const ids = criptoDatas.map((data) => data.idCMC.toString())
+      const convert = 'USD'
+      const baseUrl =
+        'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
+      const apiKey = process.env.CMC_API_KEY
+      const queryString = `?id=${ids.join(',')}&convert=${convert}`
+      const options = {
+        headers: { 'X-CMC_PRO_API_KEY': apiKey },
       }
-    } catch (error) {
-      console.error('Error fetching cryptocurrency data:', error)
+
+      try {
+        const response = await firstValueFrom(
+          this.httpService.get(baseUrl + queryString, options),
+        )
+        const data = response.data
+
+        const values = ids
+          .map((id) => {
+            if (data.data && data.data[id]) {
+              const coinData = data.data[id]
+              return {
+                idCMC: coinData.id,
+                name: coinData.symbol,
+                price: coinData.quote[convert].price,
+              }
+            } else {
+              return null
+            }
+          })
+          .filter((v) => v !== null)
+
+        for (const value of values) {
+          await this.adminUpdateModel.updateCriptoNameAndPrice(
+            value.idCMC,
+            value.name,
+            value.price,
+          )
+        }
+      } catch (error) {
+        console.error('Error fetching cryptocurrency data:', error)
+      }
     }
   }
 

@@ -26,20 +26,8 @@ export class CreateCriptoService {
         message: `${result.count} novo(s) idCMC(s) adicionado(s).`,
       }
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        switch (error.code) {
-          case 'P2002':
-            return {
-              message: 'Alguns idsCMC estavam duplicados e foram ignorados.',
-            }
-          default:
-            console.error('Erro do Prisma:', error)
-            throw new Error('Erro ao adicionar idsCMC ao banco de dados.')
-        }
-      } else {
-        console.error('Erro desconhecido:', error)
-        throw new Error('Um erro desconhecido ocorreu.')
-      }
+      console.error('Erro desconhecido:', error)
+      throw new Error('Um erro desconhecido ocorreu.')
     }
   }
 
