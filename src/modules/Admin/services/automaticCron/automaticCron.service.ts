@@ -143,7 +143,7 @@ export class AutomaticCronService {
     }
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCronFetchAndSaveCriptoData() {
     await this.fetchAndSaveCryptocurrencyData()
   }
