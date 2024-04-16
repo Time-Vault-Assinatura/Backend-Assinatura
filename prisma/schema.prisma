@@ -18,13 +18,6 @@ enum Roles {
   ADMIN
 }
 
-enum Cripto_data_types {
-    CONS
-    VAULT
-    ARROJ
-    OUT
-}
-
 model Cripto_data {
   id                String              @id @default(uuid())
   idCMC             Int                 
@@ -40,7 +33,6 @@ model Cripto_data {
   isVisible Boolean @default(false)
   updateAt DateTime @updatedAt
   lastAutoUpdate String?
-  cripto_data_type  Cripto_data_types @default(OUT)  
   Historic_buy_sell Historic_buy_sell[]
 }
 
