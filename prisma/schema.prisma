@@ -20,7 +20,7 @@ enum Roles {
 
 model Cripto_data {
   id                String              @id @default(uuid())
-  idCMC             Int                 @unique
+  idCMC             Int                 
   ticker            String?
   entrada           String?
   precoAtual        String?
@@ -33,6 +33,7 @@ model Cripto_data {
   isVisible Boolean @default(false)
   updateAt DateTime @updatedAt
   lastAutoUpdate String?
+  cripto_data_type  String?  
   Historic_buy_sell Historic_buy_sell[]
 }
 
