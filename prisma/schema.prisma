@@ -20,7 +20,7 @@ enum Roles {
 
 model Cripto_data {
   id                String              @id @default(uuid())
-  idCMC             Int                 
+  idCMC             Int                 @unique
   ticker            String?
   entrada           String?
   precoAtual        String?
