@@ -1,6 +1,6 @@
 const forgotPassword = (token, nameUser, userEmail) => {
   const encodedEmail = encodeURIComponent(userEmail)
-  const resetLink = `http://localhost:5173/reset-password?token=${token}&email=${encodedEmail}`
+  const resetLink = `https://backend-assinatura-production.up.railway.app/reset-password?token=${token}&email=${encodedEmail}`
 
   return `
           <!doctype html>

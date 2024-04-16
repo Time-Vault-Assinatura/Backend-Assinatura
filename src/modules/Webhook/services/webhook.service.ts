@@ -1,15 +1,26 @@
 import { Injectable } from '@nestjs/common'
 import { WebhookEvent } from '../DTO/webhook.dto'
 import { WebhookCreateModel } from '../models/webhook.create'
+import { MailerService } from '@nestjs-modules/mailer'
+import createPassword from '../../../templates/create-password'
 
 @Injectable()
 export class WebhookService {
-  constructor(private webhookCreateModel: WebhookCreateModel) {}
+  constructor(
+    private readonly webhookCreateModel: WebhookCreateModel,
+    private readonly mailer: MailerService,
+  ) {}
 
   async handleWebhook(event: WebhookEvent) {
     const { firstName, lastName, email } = event.event.user
     const status = event.event.subscription.status
 
     await this.webhookCreateModel.userCreate(firstName, lastName, email, status)
+
+    this.mailer.sendMail({
+      to: email,
+      subject: 'Recupere a sua senha da assinatura Vault',
+      html: createPassword(firstName),
+    })
   }
 }
