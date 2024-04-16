@@ -1,5 +1,6 @@
-const createPassword = (nameUser) => {
-  const resetLink = `https://backend-assinatura-production.up.railway.app/create-password`
+const createPassword = (nameUser, userEmail) => {
+  const encodedEmail = encodeURIComponent(userEmail)
+  const resetLink = `https://plataforma.vaultresearch.com.br/create-password?email=${encodedEmail}`
 
   return `
             <!doctype html>

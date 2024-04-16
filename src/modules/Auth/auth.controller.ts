@@ -100,8 +100,11 @@ export class AuthController {
   }
 
   @Post('create-password')
-  async createPassword(@Body() body: { email: string; newPassword: string }) {
-    return await this.authService.createPassword(body.email, body.newPassword)
+  async createPassword(
+    @Query('email') email: string,
+    @Body('newPassword') newPassword: string,
+  ) {
+    return await this.authService.createPassword(email, newPassword)
   }
 
   @Patch('update-password')
