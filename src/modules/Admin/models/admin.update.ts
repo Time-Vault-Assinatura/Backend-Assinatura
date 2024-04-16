@@ -78,7 +78,7 @@ export class AdminUpdateModel {
       include: {
         Historic_buy_sell: true, // Inclui os dados relacionados de Historic_buy_sell
       },
-    })
+    }) // backend
 
     for (const cripto of criptos) {
       const somaQnt = cripto.Historic_buy_sell.reduce(
