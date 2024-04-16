@@ -19,7 +19,7 @@ export class WebhookService {
 
     this.mailer.sendMail({
       to: email,
-      subject: 'Recupere a sua senha da assinatura Vault',
+      subject: 'Crai a sua senha para acessar a plataforma da Vault',
       html: createPassword(firstName, email),
     })
   }
