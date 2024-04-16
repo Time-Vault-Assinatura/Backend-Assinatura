@@ -1,14 +1,5 @@
-/*
-  Warnings:
-
-  - You are about to drop the `CriptoData` table. If the table is not empty, all the data it contains will be lost.
-
-*/
 -- CreateEnum
 CREATE TYPE "Roles" AS ENUM ('USER', 'ADMIN');
-
--- DropTable
-DROP TABLE "CriptoData";
 
 -- CreateTable
 CREATE TABLE "Cripto_data" (
@@ -23,6 +14,9 @@ CREATE TABLE "Cripto_data" (
     "vies" TEXT,
     "quantidade" TEXT,
     "valorInvestido" TEXT,
+    "isVisible" BOOLEAN NOT NULL DEFAULT false,
+    "updateAt" TIMESTAMP(3) NOT NULL,
+    "lastAutoUpdate" TEXT,
 
     CONSTRAINT "Cripto_data_pkey" PRIMARY KEY ("id")
 );
@@ -43,7 +37,7 @@ CREATE TABLE "User" (
     "name" TEXT,
     "email" TEXT NOT NULL,
     "password" TEXT,
-    "isValid" BOOLEAN NOT NULL,
+    "isValid" BOOLEAN NOT NULL DEFAULT false,
     "isFirstAcess" BOOLEAN NOT NULL DEFAULT true,
     "role" "Roles" NOT NULL DEFAULT 'USER',
 
@@ -52,6 +46,9 @@ CREATE TABLE "User" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Cripto_data_idCMC_key" ON "Cripto_data"("idCMC");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- AddForeignKey
 ALTER TABLE "Historic_buy_sell" ADD CONSTRAINT "Historic_buy_sell_criptoId_fkey" FOREIGN KEY ("criptoId") REFERENCES "Cripto_data"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
