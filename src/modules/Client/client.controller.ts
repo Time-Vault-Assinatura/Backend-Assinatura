@@ -21,4 +21,9 @@ export class ClientController {
   async getUserData(@Query('email') email: string) {
     return this.userDataService.getUserData(email)
   }
+
+  @Get('vault-rentability')
+  async getRendimento() {
+    return await this.userDataService.calculateGeralRentability()
+  }
 }

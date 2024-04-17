@@ -35,4 +35,14 @@ export class ClientReadModel {
       throw error
     }
   }
+
+  async getAllCriptoData() {
+    try {
+      const allCriptoData = await this.prismaService.cripto_data.findMany()
+      return allCriptoData
+    } catch (error) {
+      console.error('Erro ao buscar todos os dados de criptomoedas:', error)
+      throw error
+    }
+  }
 }
