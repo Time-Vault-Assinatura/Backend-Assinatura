@@ -42,23 +42,23 @@ export class ReadCriptoService {
 
   async fetchHistoricalQuotes() {
     const url =
-      'https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/historical'
+      'https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/historical';
     const headers = {
       'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY,
-    }
-
+    };
+  
     try {
       const response = await axios.get(url, { headers });
   
-      if (response.data && response.data.data) {
-        // Aqui você pode manipular os dados conforme necessário
-        const historicalData = response.data.data;
+      if (response.data && response.data.data && response.data.data[0]) {
+        const latestData = response.data.data[0];
+        const { total_market_cap, total_volume_24h, btc_dominance } = latestData;
   
-        // Extrair as informações desejadas
-        const { total_market_cap, total_volume_24h, btc_dominance } = historicalData;
-  
-        // Retornar as informações extraídas
-        return { total_market_cap, total_volume_24h, btc_dominance };
+        return {
+          totalMarketCap: total_market_cap,
+          totalVolume24h: total_volume_24h,
+          btcDominance: btc_dominance
+        };
       } else {
         console.error('Resposta inválida da API:', response.data);
         throw new Error('Resposta inválida da API');
