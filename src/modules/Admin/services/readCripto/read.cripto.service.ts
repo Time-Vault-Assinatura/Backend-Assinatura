@@ -53,7 +53,12 @@ export class ReadCriptoService {
       if (response.data && response.data.data) {
         // Aqui você pode manipular os dados conforme necessário
         const historicalData = response.data.data;
-        return historicalData;
+  
+        // Extrair as informações desejadas
+        const { total_market_cap, total_volume_24h, btc_dominance } = historicalData;
+  
+        // Retornar as informações extraídas
+        return { total_market_cap, total_volume_24h, btc_dominance };
       } else {
         console.error('Resposta inválida da API:', response.data);
         throw new Error('Resposta inválida da API');
