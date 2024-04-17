@@ -104,7 +104,7 @@ export class AdminController {
     return this.updateCriptoService.updateVisibility(id, isVisible)
   }
 
-  @UseGuards(AuthGuardAdmin)
+  @UseGuards(AuthGuardUser)
   @Get('get-global-market')
   async fetchHistoricalQuotes() {
     return this.readCriptoService.fetchHistoricalQuotes()
