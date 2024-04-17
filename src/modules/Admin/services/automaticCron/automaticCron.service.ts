@@ -150,7 +150,6 @@ export class AutomaticCronService {
 
   @Cron(CronExpression.EVERY_10_SECONDS)
   async handleCron() {
-    await this.updateVies()
     await this.calculateRentability()
     await this.calculateCurrentAllocation()
   }
