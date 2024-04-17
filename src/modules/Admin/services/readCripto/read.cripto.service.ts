@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs' // Importação necessária do RxJS
 import { AdminReadModel } from '../../models/admin.read'
 import { HttpService } from '@nestjs/axios'
+import axios from 'axios';
 
 @Injectable()
 export class ReadCriptoService {
@@ -47,13 +48,19 @@ export class ReadCriptoService {
     }
 
     try {
-      const response = await firstValueFrom(
-        this.httpService.get(url, { headers }),
-      )
-      return response.data
+      const response = await axios.get(url, { headers });
+  
+      if (response.data && response.data.data) {
+        // Aqui você pode manipular os dados conforme necessário
+        const historicalData = response.data.data;
+        return historicalData;
+      } else {
+        console.error('Resposta inválida da API:', response.data);
+        throw new Error('Resposta inválida da API');
+      }
     } catch (error) {
-      console.error('Error fetching historical quotes:', error)
-      throw new Error('Failed to fetch historical quotes')
+      console.error('Erro ao buscar cotações históricas:', error);
+      throw new Error('Falha ao buscar cotações históricas');
     }
   }
 }
