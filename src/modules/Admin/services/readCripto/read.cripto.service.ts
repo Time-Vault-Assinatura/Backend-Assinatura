@@ -41,31 +41,28 @@ export class ReadCriptoService {
   }
 
   async fetchHistoricalQuotes() {
-    const url =
-      'https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/historical';
-    const headers = {
-      'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY,
-    };
-  
-    try {
-      const response = await axios.get(url, { headers });
-  
-      if (response.data && response.data.data && response.data.data[0]) {
-        const latestData = response.data.data[0];
-        const { total_market_cap, total_volume_24h, btc_dominance } = latestData;
-  
-        return {
-          totalMarketCap: total_market_cap,
-          totalVolume24h: total_volume_24h,
-          btcDominance: btc_dominance
-        };
-      } else {
-        console.error('Resposta inválida da API:', response.data);
-        throw new Error('Resposta inválida da API');
-      }
-    } catch (error) {
-      console.error('Erro ao buscar cotações históricas:', error);
-      throw new Error('Falha ao buscar cotações históricas');
+    const baseUrl =
+    'https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/historical'
+    const apiKey = process.env.CMC_API_KEY
+    const options = {
+      headers: { 'X-CMC_PRO_API_KEY': apiKey },
+
     }
+      try {
+        const response = await firstValueFrom(this.httpService.get(baseUrl, options));
+        const data = response.data.data.quotes; // Ajuste para acessar os dados corretamente
+        const historicalData = data.map(quote => ({
+          timestamp: quote.timestamp,
+          totalMarketCap: quote.quote.USD.total_market_cap,
+          totalVolume24h: quote.quote.USD.total_volume_24h,
+          btcDominance: quote.btc_dominance,
+        }));
+    
+        console.log(historicalData); // Ajuste para visualizar os dados no console, se necessário
+    
+        return historicalData
+      }catch (error) {
+        console.error('Error fetching cryptocurrency data:', error)
+    }    
   }
 }

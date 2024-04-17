@@ -18,6 +18,7 @@ import { AutomaticCronService } from './services/automaticCron/automaticCron.ser
 import { DeleteCriptoService } from './services/deleteCripto/delete.cripto.service'
 import { UpdateCriptoService } from './services/updateCripto/update.cripto.service'
 import { AuthGuardAdmin } from 'src/guards/auth-admin.guard'
+import { AuthGuardUser } from 'src/guards/auth-user.guard'
 
 @Controller('admin')
 export class AdminController {
@@ -106,6 +107,6 @@ export class AdminController {
   @UseGuards(AuthGuardAdmin)
   @Get('get-global-market')
   async fetchHistoricalQuotes() {
-    return this.readCriptoService.fetchHistoricalQuotes
+    return this.readCriptoService.fetchHistoricalQuotes()
   }
 }
