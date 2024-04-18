@@ -25,7 +25,7 @@ export class UserDataService {
       (acc, cripto) => acc + parseFloat(cripto.valorInvestido),
       0,
     )
-    const rendimento = (totalInvested / 2000) * 100
+    const rendimento = ((totalInvested - 2000) / 2000) * 100
 
     return {
       totalInvested,
