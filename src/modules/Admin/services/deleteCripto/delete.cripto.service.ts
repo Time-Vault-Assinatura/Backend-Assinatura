@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { AdminDeleteModel } from '../../models/admin.delete'
 import { AdminUpdateModel } from '../../models/admin.update'
-import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class DeleteCriptoService {
@@ -10,9 +9,9 @@ export class DeleteCriptoService {
     private readonly adminUpdateModel: AdminUpdateModel,
   ) {}
 
-  async deleteCripto(idCMC: number) {
+  async deleteCripto(id: string) {
     try {
-      return await this.adminDeleteModel.deleteCripto(idCMC)
+      return await this.adminDeleteModel.deleteCripto(id)
     } catch (error) {
       if (error.code === 'P2025') {
         throw new Error('Registro não encontrado.')

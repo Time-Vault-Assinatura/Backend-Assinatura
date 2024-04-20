@@ -1,7 +1,7 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common'
 import { GetAllCriptoService } from './services/getAllCripto/getAllCripto.service'
 import { AuthGuardUser } from 'src/guards/auth-user.guard'
-import { UserDataService } from './services/getUserData.service.ts/getUserData'
+import { UserDataService } from './services/getUserData/getUserData.service'
 
 @Controller('user')
 export class ClientController {

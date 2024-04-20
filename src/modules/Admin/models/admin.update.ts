@@ -7,7 +7,7 @@ export class AdminUpdateModel {
 
   async updateCriptoNameAndPrice(idCMC: number, name: string, price: number) {
     try {
-      await this.prismaService.cripto_data.update({
+      await this.prismaService.cripto_data.updateMany({
         where: {
           idCMC,
         },
@@ -51,7 +51,7 @@ export class AdminUpdateModel {
   }
 
   async updateCriptoEntryAndAllocation(
-    idCMC: number,
+    id: string,
     entrada: string,
     alocacao: string,
   ) {
@@ -59,7 +59,7 @@ export class AdminUpdateModel {
       // Use "data" para especificar os campos a serem atualizados
       await this.prismaService.cripto_data.update({
         where: {
-          idCMC,
+          id,
         },
         data: {
           // Corrigido de "update" para "data"

@@ -6,7 +6,7 @@ export class UpdateCriptoService {
   constructor(private readonly adminUpdateModel: AdminUpdateModel) {}
 
   async updateEntryAndAllocation(criptoDetails: {
-    idCMC: number
+    id: string
     entrada?: string
     alocacao?: string
   }) {
@@ -25,7 +25,7 @@ export class UpdateCriptoService {
 
     try {
       await this.adminUpdateModel.updateCriptoEntryAndAllocation(
-        criptoDetails.idCMC,
+        criptoDetails.id,
         updateData.entrada,
         updateData.alocacao,
       )

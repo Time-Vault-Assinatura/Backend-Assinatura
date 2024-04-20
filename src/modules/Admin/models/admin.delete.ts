@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/config/prisma/prisma.service'
-import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class AdminDeleteModel {
   constructor(private prismaService: PrismaService) {}
 
-  async deleteCripto(idCMC: number) {
+  async deleteCripto(id: string) {
     try {
       return await this.prismaService.cripto_data.delete({
-        where: { idCMC },
+        where: { id },
       })
     } catch (error) {
       if (error.code === 'P2025') {
