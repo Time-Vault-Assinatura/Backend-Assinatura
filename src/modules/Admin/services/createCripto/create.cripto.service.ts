@@ -3,7 +3,6 @@ import { AdminCreateModel } from '../../models/admin.create'
 import { AdminUpdateModel } from '../../models/admin.update'
 import { AdminReadModel } from '../../models/admin.read'
 import { AutomaticCronService } from '../automaticCron/automaticCron.service'
-import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class CreateCriptoService {

@@ -4,7 +4,6 @@ import {
   Post,
   Delete,
   Param,
-  ParseIntPipe,
   HttpCode,
   HttpStatus,
   Patch,
@@ -51,14 +50,14 @@ export class AdminController {
   @UseGuards(AuthGuardAdmin)
   @Delete('delete/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteCriptoData(@Param('id', ParseIntPipe) id: string) {
+  async deleteCriptoData(@Param('id') id: string) {
     await this.deleteCriptoService.deleteCripto(id)
   }
 
   @UseGuards(AuthGuardAdmin)
   @Patch('update-details/:id')
   async updateCriptoDetails(
-    @Param('id', ParseIntPipe) id: string,
+    @Param('id') id: string,
     @Body()
     body: {
       entrada?: string

@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/config/prisma/prisma.service'
+import { Wallets } from '@prisma/client'
 
 @Injectable()
 export class ClientReadModel {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getAllCriptoDataFiltred() {
+  async getAllCriptoDataFiltred(wallet: Wallets) {
     try {
       const allCriptoData = await this.prismaService.cripto_data.findMany({
         where: {
           isVisible: true,
+          wallet,
         },
       })
       return allCriptoData
