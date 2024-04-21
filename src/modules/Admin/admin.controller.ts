@@ -4,7 +4,6 @@ import {
   Post,
   Delete,
   Param,
-  ParseIntPipe,
   HttpCode,
   HttpStatus,
   Patch,
@@ -49,24 +48,24 @@ export class AdminController {
   }
 
   @UseGuards(AuthGuardAdmin)
-  @Delete('delete/:idCMC')
+  @Delete('delete/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteCriptoData(@Param('idCMC', ParseIntPipe) idCMC: number) {
-    await this.deleteCriptoService.deleteCripto(idCMC)
+  async deleteCriptoData(@Param('id') id: string) {
+    await this.deleteCriptoService.deleteCripto(id)
   }
 
-  @UseGuards(AuthGuardAdmin)
-  @Patch('update-details/:idCMC')
+  @Patch('update-details/:id')
   async updateCriptoDetails(
-    @Param('idCMC', ParseIntPipe) idCMC: number,
+    @Param('id') id: string,
     @Body()
     body: {
       entrada?: string
       alocacao?: string
+      data_entrada?: Date
     },
   ) {
     return await this.updateCriptoService.updateEntryAndAllocation({
-      idCMC,
+      id,
       ...body,
     })
   }
