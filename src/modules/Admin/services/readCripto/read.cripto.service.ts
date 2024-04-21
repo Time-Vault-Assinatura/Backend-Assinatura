@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs' // Importação necessária do RxJS
 import { AdminReadModel } from '../../models/admin.read'
 import { HttpService } from '@nestjs/axios'
-import axios from 'axios'
 
 @Injectable()
 export class ReadCriptoService {

@@ -54,7 +54,6 @@ export class AdminController {
     await this.deleteCriptoService.deleteCripto(id)
   }
 
-  @UseGuards(AuthGuardAdmin)
   @Patch('update-details/:id')
   async updateCriptoDetails(
     @Param('id') id: string,
@@ -62,6 +61,7 @@ export class AdminController {
     body: {
       entrada?: string
       alocacao?: string
+      data_entrada?: Date
     },
   ) {
     return await this.updateCriptoService.updateEntryAndAllocation({

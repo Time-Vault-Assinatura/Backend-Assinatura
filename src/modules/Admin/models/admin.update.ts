@@ -52,20 +52,12 @@ export class AdminUpdateModel {
 
   async updateCriptoEntryAndAllocation(
     id: string,
-    entrada: string,
-    alocacao: string,
+    updateData: { entrada?: string; alocacao?: string; data_entrada?: string }, // Usando string para data_entrada
   ) {
     try {
-      // Use "data" para especificar os campos a serem atualizados
       await this.prismaService.cripto_data.update({
-        where: {
-          id,
-        },
-        data: {
-          // Corrigido de "update" para "data"
-          entrada,
-          alocacao,
-        },
+        where: { id },
+        data: updateData,
       })
     } catch (error) {
       console.error('Erro ao atualizar detalhes da criptomoeda:', error)

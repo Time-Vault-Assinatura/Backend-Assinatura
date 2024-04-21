@@ -1,12 +1,16 @@
 -- CreateEnum
 CREATE TYPE "Roles" AS ENUM ('USER', 'ADMIN');
 
+-- CreateEnum
+CREATE TYPE "Wallets" AS ENUM ('CONSERVADORA', 'MODERADA', 'ARROJADA', 'OUT');
+
 -- CreateTable
 CREATE TABLE "Cripto_data" (
     "id" TEXT NOT NULL,
-    "idCMC" INTEGER NOT NULL,
+    "idCMC" INTEGER,
     "ticker" TEXT,
     "entrada" TEXT,
+    "data_entrada" TEXT,
     "precoAtual" TEXT,
     "alocacao" TEXT,
     "alocacaoAtual" TEXT,
@@ -14,6 +18,7 @@ CREATE TABLE "Cripto_data" (
     "vies" TEXT,
     "quantidade" TEXT,
     "valorInvestido" TEXT,
+    "wallet" "Wallets" NOT NULL DEFAULT 'OUT',
     "isVisible" BOOLEAN NOT NULL DEFAULT false,
     "updateAt" TIMESTAMP(3) NOT NULL,
     "lastAutoUpdate" TEXT,
@@ -44,11 +49,19 @@ CREATE TABLE "User" (
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "Cripto_data_idCMC_key" ON "Cripto_data"("idCMC");
+-- CreateTable
+CREATE TABLE "Feedbacks" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+
+    CONSTRAINT "Feedbacks_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- AddForeignKey
 ALTER TABLE "Historic_buy_sell" ADD CONSTRAINT "Historic_buy_sell_criptoId_fkey" FOREIGN KEY ("criptoId") REFERENCES "Cripto_data"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Feedbacks" ADD CONSTRAINT "Feedbacks_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -19,9 +19,9 @@ enum Roles {
 }
 
 enum Wallets {
-    CONS
-    MODE 
-    ARRO
+    CONSERVADORA
+    MODERADA
+    ARROJADA
     OUT
 }
 
@@ -30,7 +30,7 @@ model Cripto_data {
   idCMC             Int?                 
   ticker            String?
   entrada           String?
-  data_entrada String?
+  data_entrada      DateTime?
   precoAtual        String?
   alocacao          String?
   alocacaoAtual     String?
