@@ -18,13 +18,6 @@ enum Roles {
   ADMIN
 }
 
-enum Wallets {
-    CONSERVADORA
-    MODERADA
-    ARROJADA
-    OUT
-}
-
 model Cripto_data {
   id                String              @id @default(uuid())
   idCMC             Int?                 
@@ -38,7 +31,7 @@ model Cripto_data {
   vies              String?
   quantidade        String?
   valorInvestido    String?
-  wallet Wallets @default(OUT)
+  wallet String? 
   isVisible Boolean @default(false)
   updateAt DateTime @updatedAt
   lastAutoUpdate String?
