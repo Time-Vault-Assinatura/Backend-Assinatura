@@ -10,6 +10,7 @@ import {
   Put,
   Get,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common'
 import { ReadCriptoService } from './services/readCripto/read.cripto.service'
 import { CreateCriptoService } from './services/createCripto/create.cripto.service'
@@ -17,7 +18,7 @@ import { AutomaticCronService } from './services/automaticCron/automaticCron.ser
 import { DeleteCriptoService } from './services/deleteCripto/delete.cripto.service'
 import { UpdateCriptoService } from './services/updateCripto/update.cripto.service'
 import { AuthGuardAdmin } from 'src/guards/auth-admin.guard'
-import { AuthGuardUser } from 'src/guards/auth-user.guard'
+import { Wallets } from './DTO/wallet.dto'
 
 @Controller('admin')
 export class AdminController {
@@ -54,6 +55,7 @@ export class AdminController {
     await this.deleteCriptoService.deleteCripto(id)
   }
 
+  @UseGuards(AuthGuardAdmin)
   @Patch('update-details/:id')
   async updateCriptoDetails(
     @Param('id') id: string,
@@ -103,9 +105,13 @@ export class AdminController {
     return this.updateCriptoService.updateVisibility(id, isVisible)
   }
 
-  @UseGuards(AuthGuardUser)
-  @Get('get-global-market')
-  async fetchHistoricalQuotes() {
-    return this.readCriptoService.fetchHistoricalQuotes()
+  @UseGuards(AuthGuardAdmin)
+  @Put('update-wallet')
+  async updateWallet(@Body() body: { id: string; wallet: Wallets }) {
+    const validWallets = ['CONSERVADORA', 'MODERADA', 'ARROJADA']
+    if (!validWallets.includes(body.wallet)) {
+      throw new BadRequestException('Invalid wallet type.')
+    }
+    return this.updateCriptoService.updateWallet(body.id, body.wallet)
   }
 }

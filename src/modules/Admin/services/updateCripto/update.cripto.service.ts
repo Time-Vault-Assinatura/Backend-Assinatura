@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { AdminUpdateModel } from '../../models/admin.update'
+import { Wallets } from '../../DTO/wallet.dto'
 
 @Injectable()
 export class UpdateCriptoService {
@@ -48,6 +49,15 @@ export class UpdateCriptoService {
       await this.adminUpdateModel.updateCriptoDataVisibility(id, isVisible)
     } catch (error) {
       console.error('Error updating crypto visibility:', error)
+      throw error
+    }
+  }
+
+  async updateWallet(id: string, wallet: Wallets) {
+    try {
+      await this.adminUpdateModel.updateWallet(id, wallet)
+    } catch (error) {
+      console.error('erro ao selecionar a carteiura do ativo', error)
       throw error
     }
   }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/config/prisma/prisma.service'
-import { Wallets } from '@prisma/client'
+import { Wallets } from 'src/modules/Admin/DTO/wallet.dto'
 
 @Injectable()
 export class ClientReadModel {
