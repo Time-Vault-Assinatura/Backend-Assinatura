@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/config/prisma/prisma.service'
+import { Wallets } from '../DTO/wallet.dto'
 
 @Injectable()
 export class AdminUpdateModel {
@@ -97,6 +98,22 @@ export class AdminUpdateModel {
       })
     } catch (error) {
       console.error('Erro ao atualizar visibilidade da cripto', error)
+      throw error
+    }
+  }
+
+  async updateWallet(id: string, wallet: Wallets) {
+    try {
+      await this.prismaService.cripto_data.update({
+        where: {
+          id,
+        },
+        data: {
+          wallet,
+        },
+      })
+    } catch (error) {
+      console.error('Erro ao atualizar a carteira do ativo', error)
       throw error
     }
   }

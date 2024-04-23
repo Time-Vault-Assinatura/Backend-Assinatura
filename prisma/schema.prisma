@@ -29,7 +29,7 @@ model Cripto_data {
   alocacaoAtual     String?
   rentabilidade     String?
   vies              String?
-  quantidade        String?
+  quantidade        String? 
   valorInvestido    String?
   wallet String? 
   isVisible Boolean @default(false)

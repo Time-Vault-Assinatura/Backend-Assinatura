@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common'
 import { ClientReadModel } from '../../models/client.read'
-import { Wallets } from '@prisma/client'
+import { Wallets } from 'src/modules/Admin/DTO/wallet.dto'
+import { firstValueFrom } from 'rxjs'
+import { HttpService } from '@nestjs/axios'
 
 @Injectable()
 export class GetAllCriptoService {
-  constructor(private readonly clientReadModel: ClientReadModel) {}
+  constructor(
+    private readonly clientReadModel: ClientReadModel,
+    private readonly httpService: HttpService,
+  ) {}
 
   async getAllVisibleCriptoData(wallet: Wallets) {
     const allCriptoDataFiltred =
@@ -29,6 +34,33 @@ export class GetAllCriptoService {
     return {
       totalInvested,
       rendimento,
+    }
+  }
+
+  async fetchHistoricalQuotes() {
+    const baseUrl =
+      'https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/historical'
+    const apiKey = process.env.CMC_API_KEY
+    const options = {
+      headers: { 'X-CMC_PRO_API_KEY': apiKey },
+    }
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(baseUrl, options),
+      )
+      const data = response.data.data.quotes // Ajuste para acessar os dados corretamente
+      const historicalData = data.map((quote) => ({
+        timestamp: quote.timestamp,
+        totalMarketCap: quote.quote.USD.total_market_cap,
+        totalVolume24h: quote.quote.USD.total_volume_24h,
+        btcDominance: quote.btc_dominance,
+      }))
+
+      console.log(historicalData) // Ajuste para visualizar os dados no console, se necessário
+
+      return historicalData
+    } catch (error) {
+      console.error('Error fetching cryptocurrency data:', error)
     }
   }
 }
