@@ -19,6 +19,7 @@ import { DeleteCriptoService } from './services/deleteCripto/delete.cripto.servi
 import { UpdateCriptoService } from './services/updateCripto/update.cripto.service'
 import { AuthGuardAdmin } from 'src/guards/auth-admin.guard'
 import { Wallets } from './DTO/wallet.dto'
+import { ReadUserService } from './services/readUser/read.user.service'
 
 @Controller('admin')
 export class AdminController {
@@ -28,6 +29,7 @@ export class AdminController {
     private readonly automaticCronService: AutomaticCronService,
     private readonly deleteCriptoService: DeleteCriptoService,
     private readonly updateCriptoService: UpdateCriptoService,
+    private readonly readUserService: ReadUserService,
   ) {}
 
   @UseGuards(AuthGuardAdmin)
@@ -113,5 +115,11 @@ export class AdminController {
       throw new BadRequestException('Invalid wallet type.')
     }
     return this.updateCriptoService.updateWallet(body.id, body.wallet)
+  }
+
+  //   @UseGuards(AuthGuardAdmin)
+  @Get('get-all-feedbacks')
+  async getAllFeedbacks() {
+    return await this.readUserService.getAllFeedbacks()
   }
 }
