@@ -60,5 +60,6 @@ model User {
 model Feedbacks {
     id String @id @default(uuid())
     user_id String
+    feedback String
     user User @relation(fields: [user_id], references: [id])
 }
