@@ -71,4 +71,14 @@ export class AdminReadModel {
       })
     return filtredBuyAndSell
   }
+
+  async getAllFeedbacks() {
+    try {
+      const result = await this.prismaService.feedbacks.findMany()
+      return result
+    } catch (error) {
+      console.error('erro ao buscar os feedbacks de ususario', error)
+      throw error
+    }
+  }
 }

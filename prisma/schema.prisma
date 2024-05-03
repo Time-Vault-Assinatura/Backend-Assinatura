@@ -20,16 +20,18 @@ enum Roles {
 
 model Cripto_data {
   id                String              @id @default(uuid())
-  idCMC             Int                 @unique
+  idCMC             Int?                 
   ticker            String?
   entrada           String?
+  data_entrada      DateTime?
   precoAtual        String?
   alocacao          String?
   alocacaoAtual     String?
   rentabilidade     String?
   vies              String?
-  quantidade        String?
+  quantidade        String? 
   valorInvestido    String?
+  wallet String? 
   isVisible Boolean @default(false)
   updateAt DateTime @updatedAt
   lastAutoUpdate String?
@@ -52,4 +54,12 @@ model User {
   isValid      Boolean @default(false)
   isFirstAcess Boolean @default(true)
   role         Roles   @default(USER)
+  Feedbacks Feedbacks[]
+}
+
+model Feedbacks {
+    id String @id @default(uuid())
+    user_id String
+    feedback String
+    user User @relation(fields: [user_id], references: [id])
 }

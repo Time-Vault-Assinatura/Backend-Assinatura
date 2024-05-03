@@ -18,18 +18,4 @@ export class UserDataService {
       throw new Error('Falha ao buscar dados do usuário')
     }
   }
-
-  public async calculateGeralRentability() {
-    const criptoDatas = await this.clientReadModel.getAllCriptoData()
-    const totalInvested = criptoDatas.reduce(
-      (acc, cripto) => acc + parseFloat(cripto.valorInvestido),
-      0,
-    )
-    const rendimento = ((totalInvested - 2000) / 2000) * 100
-
-    return {
-      totalInvested,
-      rendimento,
-    }
-  }
 }

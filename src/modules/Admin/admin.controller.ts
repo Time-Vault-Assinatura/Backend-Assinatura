@@ -4,13 +4,13 @@ import {
   Post,
   Delete,
   Param,
-  ParseIntPipe,
   HttpCode,
   HttpStatus,
   Patch,
   Put,
   Get,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common'
 import { ReadCriptoService } from './services/readCripto/read.cripto.service'
 import { CreateCriptoService } from './services/createCripto/create.cripto.service'
@@ -18,7 +18,8 @@ import { AutomaticCronService } from './services/automaticCron/automaticCron.ser
 import { DeleteCriptoService } from './services/deleteCripto/delete.cripto.service'
 import { UpdateCriptoService } from './services/updateCripto/update.cripto.service'
 import { AuthGuardAdmin } from 'src/guards/auth-admin.guard'
-import { AuthGuardUser } from 'src/guards/auth-user.guard'
+import { Wallets } from './DTO/wallet.dto'
+import { ReadUserService } from './services/readUser/read.user.service'
 
 @Controller('admin')
 export class AdminController {
@@ -28,6 +29,7 @@ export class AdminController {
     private readonly automaticCronService: AutomaticCronService,
     private readonly deleteCriptoService: DeleteCriptoService,
     private readonly updateCriptoService: UpdateCriptoService,
+    private readonly readUserService: ReadUserService,
   ) {}
 
   @UseGuards(AuthGuardAdmin)
@@ -49,24 +51,25 @@ export class AdminController {
   }
 
   @UseGuards(AuthGuardAdmin)
-  @Delete('delete/:idCMC')
+  @Delete('delete/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteCriptoData(@Param('idCMC', ParseIntPipe) idCMC: number) {
-    await this.deleteCriptoService.deleteCripto(idCMC)
+  async deleteCriptoData(@Param('id') id: string) {
+    await this.deleteCriptoService.deleteCripto(id)
   }
 
   @UseGuards(AuthGuardAdmin)
-  @Patch('update-details/:idCMC')
+  @Patch('update-details/:id')
   async updateCriptoDetails(
-    @Param('idCMC', ParseIntPipe) idCMC: number,
+    @Param('id') id: string,
     @Body()
     body: {
       entrada?: string
       alocacao?: string
+      data_entrada?: Date
     },
   ) {
     return await this.updateCriptoService.updateEntryAndAllocation({
-      idCMC,
+      id,
       ...body,
     })
   }
@@ -104,9 +107,19 @@ export class AdminController {
     return this.updateCriptoService.updateVisibility(id, isVisible)
   }
 
-  @UseGuards(AuthGuardUser)
-  @Get('get-global-market')
-  async fetchHistoricalQuotes() {
-    return this.readCriptoService.fetchHistoricalQuotes()
+  @UseGuards(AuthGuardAdmin)
+  @Put('update-wallet')
+  async updateWallet(@Body() body: { id: string; wallet: Wallets }) {
+    const validWallets = ['CONSERVADORA', 'MODERADA', 'ARROJADA']
+    if (!validWallets.includes(body.wallet)) {
+      throw new BadRequestException('Invalid wallet type.')
+    }
+    return this.updateCriptoService.updateWallet(body.id, body.wallet)
+  }
+
+  //   @UseGuards(AuthGuardAdmin)
+  @Get('get-all-feedbacks')
+  async getAllFeedbacks() {
+    return await this.readUserService.getAllFeedbacks()
   }
 }
