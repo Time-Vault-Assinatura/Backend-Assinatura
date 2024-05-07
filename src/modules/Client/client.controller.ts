@@ -48,8 +48,15 @@ export class ClientController {
   @Post('add-feedback')
   async addFeedback(
     @Query('userId') userId: string,
-    @Body() body: { feedback: string },
+    @Body()
+    body: { categoria: string; assunto: string; feedback: string; nps: string },
   ) {
-    return await this.createUserService.addFeedback(userId, body.feedback)
+    return await this.createUserService.addFeedback(
+      userId,
+      body.categoria,
+      body.assunto,
+      body.feedback,
+      body.nps,
+    )
   }
 }
