@@ -122,4 +122,10 @@ export class AdminController {
   async getAllFeedbacks() {
     return await this.readUserService.getAllFeedbacks()
   }
+
+  @UseGuards(AuthGuardAdmin)
+  @Get('cripto-images')
+  async getCriptoImages() {
+    return await this.automaticCronService.fetchAndSaveCryptocurrencyImage()
+  }
 }

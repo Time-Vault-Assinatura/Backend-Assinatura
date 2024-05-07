@@ -60,6 +60,54 @@ export class AutomaticCronService {
     }
   }
 
+  public async fetchAndSaveCryptocurrencyImage() {
+    const criptoDatas = await this.adminReadModel.getAllCriptoData()
+    if (criptoDatas.length !== 0) {
+      const ids = criptoDatas.map((data) => data.idCMC.toString())
+
+      const baseUrl = 'https://pro-api.coinmarketcap.com/v2/cryptocurrency/info'
+      const apiKey = process.env.CMC_API_KEY
+      const queryString = `?id=${ids.join(',')}&skip_invalid=true`
+      const options = {
+        headers: { 'X-CMC_PRO_API_KEY': apiKey },
+      }
+
+      try {
+        const response = await firstValueFrom(
+          this.httpService.get(baseUrl + queryString, options),
+        )
+        const data = response.data
+
+        const values = ids.map((id) => {
+          if (data.data && data.data[id]) {
+            const coinData = data.data[id]
+            return {
+              idCMC: parseInt(id, 10),
+              imagem: coinData.logo || '',
+            }
+          } else {
+            return {
+              idCMC: parseInt(id, 10),
+              imagem: '',
+            }
+          }
+        })
+
+        for (const value of values) {
+          await this.adminUpdateModel.updateCriptoImage(
+            value.idCMC,
+            value.imagem,
+          )
+        }
+      } catch (error) {
+        console.error(
+          'Error fetching cryptocurrency image:',
+          error.response?.data || error,
+        )
+      }
+    }
+  }
+
   private async updateVies() {
     const criptoDatas =
       await this.adminReadModel.getAllCriptoDataWhereAllocationAndCurrentAllocationIsNotNull()
@@ -141,6 +189,11 @@ export class AutomaticCronService {
       totalInvestedValue: totalPortfolioValue, // totalInvestedValue é agora igual ao totalPortfolioValue
       investimentoPorcentagem: 100, // Como totalInvestedValue agora é igual ao totalPortfolioValue, a porcentagem é 100%
     }
+  }
+
+  @Cron('0 0 */7 * *')
+  async handleCronFetchAndSaveCriptoImage() {
+    await this.fetchAndSaveCryptocurrencyImage()
   }
 
   @Cron(CronExpression.EVERY_5_MINUTES)
