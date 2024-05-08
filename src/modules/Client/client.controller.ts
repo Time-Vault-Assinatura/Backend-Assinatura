@@ -50,12 +50,12 @@ export class ClientController {
   @UseGuards(AuthGuardUser)
   @Post('add-feedback')
   async addFeedback(
-    @Req() req: TRequest,
+    @Req() req,
     @Body()
     body: { categoria: string; assunto: string; feedback: string; nps: string },
   ) {
     return await this.createUserService.addFeedback(
-      req.tokenPayload.uuid,
+      req.uuid,
       body.categoria,
       body.assunto,
       body.feedback,
