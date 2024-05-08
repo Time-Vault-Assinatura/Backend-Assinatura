@@ -21,11 +21,7 @@ export class AuthGuardUser implements CanActivate {
       const token = (authorization ?? '').split(' ')[1]
       const data = this.checkTokenService.user(token)
 
-      console.log('Dados Decodificados:', data)
-
-      // Verifica se o campo `uuid` está presente
       if (!data.uuid) {
-        console.error('UUID não encontrado no token:', data)
         throw new UnauthorizedException('UUID não encontrado no token')
       }
 
