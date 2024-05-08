@@ -6,7 +6,7 @@ export class ClientCreateModel {
   constructor(private readonly prismaService: PrismaService) {}
 
   async addFeedback(
-    userId: string,
+    uuid: string,
     categoria: string,
     assunto: string,
     feedback: string,
@@ -14,7 +14,7 @@ export class ClientCreateModel {
   ) {
     try {
       const result = await this.prismaService.feedbacks.createMany({
-        data: [{ user_id: userId, categoria, assunto, feedback, nps }],
+        data: [{ user_id: uuid, categoria, assunto, feedback, nps }],
       })
       return result
     } catch (error) {

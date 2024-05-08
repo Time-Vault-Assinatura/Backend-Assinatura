@@ -6,7 +6,7 @@ export class CreateUserService {
   constructor(private readonly clientCreateModel: ClientCreateModel) {}
 
   async addFeedback(
-    userId: string,
+    uuid: string,
     categoria: string,
     assunto: string,
     feedback: string,
@@ -14,7 +14,7 @@ export class CreateUserService {
   ) {
     try {
       await this.clientCreateModel.addFeedback(
-        userId,
+        uuid,
         categoria,
         assunto,
         feedback,
