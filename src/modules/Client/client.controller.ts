@@ -6,12 +6,14 @@ import {
   Param,
   Post,
   Body,
+  Req,
 } from '@nestjs/common'
 import { GetAllCriptoService } from './services/getAllCripto/getAllCripto.service'
 import { AuthGuardUser } from 'src/guards/auth-user.guard'
 import { UserDataService } from './services/getUserData/getUserData.service'
 import { Wallets } from '../Admin/DTO/wallet.dto'
 import { CreateUserService } from './services/createClientData/create.client.service'
+import { TRequest } from './DTO/uuid.dto'
 
 @Controller('user')
 export class ClientController {
@@ -47,12 +49,12 @@ export class ClientController {
 
   @Post('add-feedback')
   async addFeedback(
-    @Query('userId') userId: string,
+    @Req() req: TRequest,
     @Body()
     body: { categoria: string; assunto: string; feedback: string; nps: string },
   ) {
     return await this.createUserService.addFeedback(
-      userId,
+      req.tokenPayload.uuid,
       body.categoria,
       body.assunto,
       body.feedback,
