@@ -47,6 +47,7 @@ export class ClientController {
     return this.getAllCriptoService.fetchHistoricalQuotes()
   }
 
+  @UseGuards(AuthGuardUser)
   @Post('add-feedback')
   async addFeedback(
     @Req() req: TRequest,
