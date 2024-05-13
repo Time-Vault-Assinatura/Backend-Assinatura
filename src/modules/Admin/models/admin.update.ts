@@ -20,6 +20,21 @@ export class AdminUpdateModel {
     } catch (error) {}
   }
 
+  async updateCriptoImage(idCMC: number, imagem: string) {
+    try {
+      await this.prismaService.cripto_data.updateMany({
+        where: {
+          idCMC,
+        },
+        data: {
+          imagem,
+        },
+      })
+    } catch (error) {
+      console.error('Error updating cripto image:', error)
+    }
+  }
+
   async updateValueInvestment(id: string, valorInvestido: number) {
     // TODO: Colocar no Try
     await this.prismaService.cripto_data.update({
