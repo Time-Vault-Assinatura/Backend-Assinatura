@@ -117,7 +117,7 @@ export class AdminController {
     return this.updateCriptoService.updateWallet(body.id, body.wallet)
   }
 
-  //   @UseGuards(AuthGuardAdmin)
+  @UseGuards(AuthGuardAdmin)
   @Get('get-all-feedbacks')
   async getAllFeedbacks() {
     return await this.readUserService.getAllFeedbacks()
