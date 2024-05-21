@@ -5,6 +5,14 @@ import { AdminReadModel } from '../../models/admin.read'
 import { firstValueFrom } from 'rxjs'
 import { AdminUpdateModel } from '../../models/admin.update'
 
+interface CriptoData {
+  id: string;
+  precoAtual: string;
+  quantidade: string;
+  valorInvestido?: string; // Adicione '?' se este campo pode não estar presente inicialmente
+  wallet?: string;
+}
+
 @Injectable()
 export class AutomaticCronService {
   constructor(
@@ -151,45 +159,51 @@ export class AutomaticCronService {
   }
 
   private async calculateCurrentAllocation() {
-    let totalInvestedValue = 0
+    const criptoDatas = await this.adminReadModel.getAllCriptoDataWherePriceAndQuantityIsNotNull();
 
-    const criptoDatas =
-      await this.adminReadModel.getAllCriptoDataWherePriceAndQuantityIsNotNull()
+    // Definindo o tipo de walletGroups
+    const walletGroups: Record<string, CriptoData[]> = criptoDatas.reduce((groups, cripto) => {
+        const key = cripto.wallet || 'default'; // Assumindo 'default' para quando não houver wallet definida
+        groups[key] = groups[key] || [];
+        groups[key].push(cripto);
+        return groups;
+    }, {});
 
-    // Primeira passagem para calcular o total investido
-    for (const cripto of criptoDatas) {
-      const precoAtual = parseFloat(cripto.precoAtual)
-      const quantidade = parseFloat(cripto.quantidade)
+    // Processar cada grupo de carteira
+    for (const [wallet, criptos] of Object.entries(walletGroups)) {
+        let totalInvestedValue = 0;
 
-      const valorInvestido = quantidade * precoAtual
-      totalInvestedValue += valorInvestido
+        // Calcular o total investido para a carteira atual
+        for (const cripto of criptos) {
+            const precoAtual = parseFloat(cripto.precoAtual);
+            const quantidade = parseFloat(cripto.quantidade);
+            const valorInvestido = quantidade * precoAtual;
+            totalInvestedValue += valorInvestido;
 
-      await this.adminUpdateModel.updateValueInvestment(
-        cripto.id,
-        valorInvestido,
-      )
-    }
+            // Atualizar o valor investido no banco de dados
+            await this.adminUpdateModel.updateValueInvestment(
+                cripto.id,
+                valorInvestido,
+            );
+        }
 
-    // totalInvestedValue agora representa o valor total da carteira
-    const totalPortfolioValue = totalInvestedValue
+        // Calcular e atualizar a alocação atual para cada ativo na carteira
+        for (const cripto of criptos) {
+            const valorInvestido = parseFloat(cripto.valorInvestido || '0');
+            const alocacaoAtual = (valorInvestido / totalInvestedValue) * 100;
 
-    // Segunda passagem para calcular e atualizar a alocação atual
-    for (const cripto of criptoDatas) {
-      const valorInvestido = parseFloat(cripto.valorInvestido)
-      const alocacaoAtual = (valorInvestido / totalPortfolioValue) * 100 // Porcentagem do total da carteira
-
-      await this.adminUpdateModel.updateAlocationCurrent(
-        cripto.id,
-        alocacaoAtual,
-      )
+            await this.adminUpdateModel.updateAlocationCurrent(
+                cripto.id,
+                alocacaoAtual,
+            );
+        }
     }
 
     return {
-      totalPortfolioValue,
-      totalInvestedValue: totalPortfolioValue, // totalInvestedValue é agora igual ao totalPortfolioValue
-      investimentoPorcentagem: 100, // Como totalInvestedValue agora é igual ao totalPortfolioValue, a porcentagem é 100%
-    }
+        message: 'Alocação atual calculada e atualizada com sucesso para cada carteira.',
+    };
   }
+
 
   @Cron('0 0 */7 * *')
   async handleCronFetchAndSaveCriptoImage() {
