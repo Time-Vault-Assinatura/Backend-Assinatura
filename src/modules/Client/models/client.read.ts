@@ -47,4 +47,32 @@ export class ClientReadModel {
       throw error
     }
   }
+
+  async getAllVideos() {
+    try {
+      const result = await this.prismaService.videos.findMany()
+      return result
+    } catch (error) {
+      console.error('Erro ao buscar videos', error)
+      throw error
+    }
+  }
+
+  async checkVideoExists(videoId: string): Promise<boolean> {
+    const video = await this.prismaService.videos.findUnique({
+      where: {
+        id: videoId,
+      },
+    })
+    return Boolean(video)
+  }
+
+  async checkUserExists(userId: string): Promise<boolean> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })
+    return Boolean(user)
+  }
 }
