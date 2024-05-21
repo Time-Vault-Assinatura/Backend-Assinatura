@@ -81,4 +81,13 @@ export class AdminReadModel {
       throw error
     }
   }
+
+  async existsCripto(id: string): Promise<boolean> {
+  const count = await this.prismaService.cripto_data.count({
+    where: {
+      id: id,
+    }
+  });
+  return count > 0;
+}
 }

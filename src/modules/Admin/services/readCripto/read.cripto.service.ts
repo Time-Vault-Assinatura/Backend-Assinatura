@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common'
-import { AdminReadModel } from '../../models/admin.read'
-import { HttpService } from '@nestjs/axios'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { AdminReadModel } from '../../models/admin.read';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class ReadCriptoService {
@@ -10,31 +10,38 @@ export class ReadCriptoService {
   ) {}
 
   async getAllCriptoData() {
-    const allCriptoData = await this.adminReadModel.getAllCriptoData()
-
-    if (allCriptoData.length === 0) {
-      return 'Nenhum dado de criptomoeda encontrado.'
+    try {
+      const allCriptoData = await this.adminReadModel.getAllCriptoData();
+      if (allCriptoData.length === 0) {
+        throw new HttpException('Nenhum dado de criptomoeda encontrado.', HttpStatus.NO_CONTENT);
+      }
+      return allCriptoData;
+    } catch (error) {
+      throw new HttpException('Erro ao acessar os dados das criptomoedas', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    return allCriptoData
   }
 
   async getAllBuyAndSell() {
-    const allBuyAndSell = await this.adminReadModel.getAllBuyAndSell()
-
-    if (allBuyAndSell.length === 0) {
-      return 'Nenhuma compra e venda encontrada'
+    try {
+      const allBuyAndSell = await this.adminReadModel.getAllBuyAndSell();
+      if (allBuyAndSell.length === 0) {
+        throw new HttpException('Nenhuma compra e venda encontrada', HttpStatus.NO_CONTENT);
+      }
+      return allBuyAndSell;
+    } catch (error) {
+      throw new HttpException('Erro ao acessar os dados de compra e venda', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return allBuyAndSell
   }
 
   async getFiltredBuyAndSell(criptoId: string) {
-    const filtredBuyAndSell =
-      await this.adminReadModel.getFiltredBuyAndSell(criptoId)
-
-    if (filtredBuyAndSell.length === 0) {
-      return 'Nenhuma compra e venda encontrada para essa moeda'
+    try {
+      const filtredBuyAndSell = await this.adminReadModel.getFiltredBuyAndSell(criptoId);
+      if (filtredBuyAndSell.length === 0) {
+        throw new HttpException(`Nenhuma compra e venda encontrada para a moeda com ID ${criptoId}`, HttpStatus.NO_CONTENT);
+      }
+      return filtredBuyAndSell;
+    } catch (error) {
+      throw new HttpException(`Erro ao acessar as transações filtradas para a moeda com ID ${criptoId}`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return filtredBuyAndSell
   }
 }
