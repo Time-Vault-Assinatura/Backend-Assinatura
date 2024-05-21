@@ -7,16 +7,13 @@ export class AdminCreateModel {
 
   async addCriptoDataIds(idsCMC: number[]) {
     try {
-      // Prepara os dados para inserção
       const dataToInsert = idsCMC.map((idCMC) => ({
         idCMC,
-        // Pode adicionar outros campos padrão aqui, se necessário
       }))
 
-      // Utiliza createMany para inserir vários registros de uma vez
       const result = await this.prismaService.cripto_data.createMany({
         data: dataToInsert,
-        skipDuplicates: true, // Ignora os registros duplicados baseado na chave única
+        skipDuplicates: true,
       })
 
       return { count: result.count }
@@ -29,12 +26,48 @@ export class AdminCreateModel {
   async addBuyAndSell(criptoId: string, qnt: number) {
     try {
       const result = await this.prismaService.historic_buy_sell.createMany({
-        data: [{ criptoId, qnt }], // Note que data espera um array de objetos
+        data: [{ criptoId, qnt }],
       })
       return result
     } catch (error) {
       console.error(error)
       throw error
+    }
+  }
+
+  async addVideo(videoInfo: {
+    module: string
+    className: string
+    classOrder: number
+    classDescription: string
+    classTime: string
+    videoUrl: string
+    bannerUrl?: string
+  }) {
+    try {
+      const {
+        module,
+        className,
+        classOrder,
+        classDescription,
+        classTime,
+        videoUrl,
+        bannerUrl,
+      } = videoInfo
+      const result = await this.prismaService.videos.create({
+        data: {
+          module,
+          className,
+          classOrder,
+          classDescription,
+          classTime,
+          videoUrl,
+          bannerUrl,
+        },
+      })
+      return result
+    } catch (error) {
+      console.error('Error adding video class:', error)
     }
   }
 }
