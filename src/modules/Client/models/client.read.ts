@@ -50,7 +50,11 @@ export class ClientReadModel {
 
   async getAllVideos() {
     try {
-      const result = await this.prismaService.videos.findMany()
+      const result = await this.prismaService.videos.findMany({
+        where:{
+          isVisible: true,
+        },
+      })
       return result
     } catch (error) {
       console.error('Erro ao buscar videos', error)
