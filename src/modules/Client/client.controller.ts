@@ -76,15 +76,15 @@ export class ClientController {
   //   @UseGuards(AuthGuardUser)
   @Patch('update-view')
   async toggleVideoView(
+    @Req() req,
     @Body()
     body: {
-      userId: string
       videoId: string
       viewed: boolean
     },
   ) {
     return await this.updateVideoService.updateVideoView(
-      body.userId,
+      req.uuid,
       body.videoId,
       body.viewed,
     )
