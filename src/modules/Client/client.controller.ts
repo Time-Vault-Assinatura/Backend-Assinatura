@@ -7,15 +7,13 @@ import {
   Post,
   Body,
   Req,
-  Patch,
 } from '@nestjs/common'
 import { GetAllCriptoService } from './services/getAllCripto/getAllCripto.service'
 import { AuthGuardUser } from 'src/guards/auth-user.guard'
 import { UserDataService } from './services/getUserData/getUserData.service'
 import { Wallets } from '../Admin/DTO/wallet.dto'
 import { CreateUserService } from './services/createClientData/create.client.service'
-import { ReadVideoService } from './services/readVideo/read.video.service'
-import { UpdateVideoService } from './services/updateVideo/update.video.service'
+import { TRequest } from './DTO/uuid.dto'
 
 @Controller('user')
 export class ClientController {
@@ -23,8 +21,6 @@ export class ClientController {
     private readonly getAllCriptoService: GetAllCriptoService,
     private readonly userDataService: UserDataService,
     private readonly createUserService: CreateUserService,
-    private readonly readVideoService: ReadVideoService,
-    private readonly updateVideoService: UpdateVideoService,
   ) {}
 
   @UseGuards(AuthGuardUser)
@@ -64,29 +60,6 @@ export class ClientController {
       body.assunto,
       body.feedback,
       body.nps,
-    )
-  }
-
-  //   @UseGuards(AuthGuardUser)
-  @Get('get-all-videos')
-  async getAllVideos() {
-    return await this.readVideoService.getAllVideos()
-  }
-
-  //   @UseGuards(AuthGuardUser)
-  @Patch('update-view')
-  async toggleVideoView(
-    @Body()
-    body: {
-      userId: string
-      videoId: string
-      viewed: boolean
-    },
-  ) {
-    return await this.updateVideoService.updateVideoView(
-      body.userId,
-      body.videoId,
-      body.viewed,
     )
   }
 }

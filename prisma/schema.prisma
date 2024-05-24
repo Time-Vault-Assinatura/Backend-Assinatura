@@ -56,7 +56,6 @@ model User {
   isFirstAcess Boolean @default(true)
   role         Roles   @default(USER)
   Feedbacks Feedbacks[]
-  VideoViews   VideoView[]
 }
 
 model Feedbacks {
@@ -67,29 +66,4 @@ model Feedbacks {
     feedback String?
     nps String?
     user User @relation(fields: [user_id], references: [id])
-}
-
-model Videos {
-  id               String       @id @default(uuid())
-  module           String
-  className        String       @unique
-  classOrder       Int
-  classDescription String
-  classTime        String?
-  videoUrl         String       @unique
-  bannerUrl        String?
-  isVisible        Boolean      @default(false)
-  VideoViews       VideoView[]
-}
-
-
-model VideoView {
-  id       String  @id @default(uuid())
-  videoId  String
-  userId   String
-  viewed   Boolean @default(false)
-  Video    Videos  @relation(fields: [videoId], references: [id])
-  User     User    @relation(fields: [userId], references: [id])
-
-  @@unique([videoId, userId]) 
 }
