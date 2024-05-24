@@ -17,9 +17,7 @@ export class AdminUpdateModel {
           precoAtual: price.toString(),
         },
       })
-    } catch (error) {
-      console.error('Error updating name and price', error)
-    }
+    } catch (error) {}
   }
 
   async updateCriptoImage(idCMC: number, imagem: string) {
@@ -132,50 +130,6 @@ export class AdminUpdateModel {
     } catch (error) {
       console.error('Erro ao atualizar a carteira do ativo', error)
       throw error
-    }
-  }
-
-  async updateVideo(videoInfo: {
-    id: string
-    module?: string
-    className?: string
-    classOrder?: number
-    classDescription?: string
-    classTime?: string
-    videoUrl?: string
-    bannerUrl?: string
-    isVisible?: boolean
-  }) {
-    try {
-      const {
-        id,
-        module,
-        className,
-        classOrder,
-        classDescription,
-        classTime,
-        videoUrl,
-        bannerUrl,
-        isVisible
-      } = videoInfo
-      const result = await this.prismaService.videos.update({
-        where: {
-          id,
-        },
-        data: {
-          module,
-          className,
-          classOrder,
-          classDescription,
-          classTime,
-          videoUrl,
-          bannerUrl,
-          isVisible
-        },
-      })
-      return result
-    } catch (error) {
-      console.error(`Error update video class ${videoInfo.id}:`, error)
     }
   }
 }
