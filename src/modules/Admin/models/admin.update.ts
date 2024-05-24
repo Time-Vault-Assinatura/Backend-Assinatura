@@ -156,6 +156,7 @@ export class AdminUpdateModel {
         classTime,
         videoUrl,
         bannerUrl,
+        isVisible
       } = videoInfo
       const result = await this.prismaService.videos.update({
         where: {
@@ -169,6 +170,7 @@ export class AdminUpdateModel {
           classTime,
           videoUrl,
           bannerUrl,
+          isVisible
         },
       })
       return result
