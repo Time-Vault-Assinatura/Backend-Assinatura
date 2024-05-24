@@ -7,6 +7,10 @@ import { ReadCriptoService } from './readCripto/read.cripto.service'
 import { AutomaticCronService } from './automaticCron/automaticCron.service'
 import { HttpModule } from '@nestjs/axios'
 import { ReadUserService } from './readUser/read.user.service'
+import { CreateVideoService } from './createVideo/create.video.service'
+import { UpdateVideoService } from './updateVideo/update.video.service'
+import { DeleteVideoService } from './deleteVideo/delete.video.service'
+import { ReadVideoService } from './readVideos/read.video.service'
 
 @Module({
   imports: [AdminModelModule, HttpModule],
@@ -17,6 +21,10 @@ import { ReadUserService } from './readUser/read.user.service'
     ReadCriptoService,
     ReadUserService,
     AutomaticCronService,
+    CreateVideoService,
+    UpdateVideoService,
+    DeleteVideoService,
+    ReadVideoService,
   ],
   exports: [
     CreateCriptoService,
@@ -25,6 +33,10 @@ import { ReadUserService } from './readUser/read.user.service'
     ReadCriptoService,
     ReadUserService,
     AutomaticCronService,
+    CreateVideoService,
+    UpdateVideoService,
+    DeleteVideoService,
+    ReadVideoService,
   ],
 })
 export class AdminServiceModule {}

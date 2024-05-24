@@ -20,6 +20,10 @@ import { UpdateCriptoService } from './services/updateCripto/update.cripto.servi
 import { AuthGuardAdmin } from 'src/guards/auth-admin.guard'
 import { Wallets } from './DTO/wallet.dto'
 import { ReadUserService } from './services/readUser/read.user.service'
+import { CreateVideoService } from './services/createVideo/create.video.service'
+import { UpdateVideoService } from './services/updateVideo/update.video.service'
+import { DeleteVideoService } from './services/deleteVideo/delete.video.service'
+import { ReadVideoService } from './services/readVideos/read.video.service'
 
 @Controller('admin')
 export class AdminController {
@@ -30,6 +34,10 @@ export class AdminController {
     private readonly deleteCriptoService: DeleteCriptoService,
     private readonly updateCriptoService: UpdateCriptoService,
     private readonly readUserService: ReadUserService,
+    private readonly createVideoService: CreateVideoService,
+    private readonly updateVideoService: UpdateVideoService,
+    private readonly deleteVideoService: DeleteVideoService,
+    private readonly readVideoService: ReadVideoService,
   ) {}
 
   @UseGuards(AuthGuardAdmin)
@@ -117,7 +125,7 @@ export class AdminController {
     return this.updateCriptoService.updateWallet(body.id, body.wallet)
   }
 
-  //   @UseGuards(AuthGuardAdmin)
+  @UseGuards(AuthGuardAdmin)
   @Get('get-all-feedbacks')
   async getAllFeedbacks() {
     return await this.readUserService.getAllFeedbacks()
@@ -127,5 +135,58 @@ export class AdminController {
   @Get('cripto-images')
   async getCriptoImages() {
     return await this.automaticCronService.fetchAndSaveCryptocurrencyImage()
+  }
+
+  //   @UseGuards(AuthGuardAdmin)
+  @Post('add-video')
+  async addVideo(
+    @Body()
+    videoInfo: {
+      module: string
+      className: string
+      classOrder: number
+      classDescription: string
+      classTime: string
+      videoUrl: string
+      bannerUrl?: string
+      isVisible?: boolean
+    },
+  ) {
+    return await this.createVideoService.addVideo(videoInfo)
+  }
+
+  //   @UseGuards(AuthGuardAdmin)
+  @Patch('update-video')
+  async updateVideo(
+    @Body()
+    videoInfo: {
+      id: string
+      module?: string
+      className?: string
+      classOrder?: number
+      classDescription?: string
+      classTime?: string
+      videoUrl?: string
+      bannerUrl?: string
+      isVisible?: boolean
+    },
+  ) {
+    return await this.updateVideoService.updateVideo(videoInfo)
+  }
+
+  //   @UseGuards(AuthGuardAdmin)
+  @Delete('delete-video')
+  async deleteVideo(
+    @Body()
+    body: {
+      id: string
+    },
+  ) {
+    return await this.deleteVideoService.deleteVideo(body.id)
+  }
+
+  @Get('get-all-videos')
+  async getAllVideos(){
+    return await this.readVideoService.getAllVideos()
   }
 }
