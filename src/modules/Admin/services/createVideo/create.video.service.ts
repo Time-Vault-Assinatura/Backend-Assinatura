@@ -13,6 +13,7 @@ export class CreateVideoService {
     classTime: string
     videoUrl: string
     bannerUrl?: string
+    isVisible?: boolean
   }) {
     // validação se o modulo existe
     // validação se já existe uma aula com esse nome

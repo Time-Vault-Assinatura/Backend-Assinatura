@@ -23,6 +23,7 @@ import { ReadUserService } from './services/readUser/read.user.service'
 import { CreateVideoService } from './services/createVideo/create.video.service'
 import { UpdateVideoService } from './services/updateVideo/update.video.service'
 import { DeleteVideoService } from './services/deleteVideo/delete.video.service'
+import { ReadVideoService } from './services/readVideos/read.video.service'
 
 @Controller('admin')
 export class AdminController {
@@ -36,6 +37,7 @@ export class AdminController {
     private readonly createVideoService: CreateVideoService,
     private readonly updateVideoService: UpdateVideoService,
     private readonly deleteVideoService: DeleteVideoService,
+    private readonly readVideoService: ReadVideoService,
   ) {}
 
   @UseGuards(AuthGuardAdmin)
@@ -147,6 +149,7 @@ export class AdminController {
       classTime: string
       videoUrl: string
       bannerUrl?: string
+      isVisible?: boolean
     },
   ) {
     return await this.createVideoService.addVideo(videoInfo)
@@ -180,5 +183,10 @@ export class AdminController {
     },
   ) {
     return await this.deleteVideoService.deleteVideo(body.id)
+  }
+
+  @Get('get-all-videos')
+  async getAllVideos(){
+    return await this.readVideoService.getAllVideos()
   }
 }
