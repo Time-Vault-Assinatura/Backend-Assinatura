@@ -9,7 +9,7 @@ export class UpdateVideoService {
     private readonly clientReadModel: ClientReadModel,
   ) {}
 
-  async updateVideoView(userId: string, videoId: string, viewed: boolean) {
+  async updateVideoView(uuid: string, videoId: string, viewed: boolean) {
     // Validar se o vídeo existe
     const videoExists = await this.clientReadModel.checkVideoExists(videoId)
     if (!videoExists) {
@@ -17,14 +17,14 @@ export class UpdateVideoService {
     }
 
     // Validar se o usuário existe
-    const userExists = await this.clientReadModel.checkUserExists(userId)
+    const userExists = await this.clientReadModel.checkUserExists(uuid)
     if (!userExists) {
-      throw new NotFoundException(`User with ID ${userId} not found.`)
+      throw new NotFoundException(`User with ID ${uuid} not found.`)
     }
 
     // Atualizar a visualização do vídeo
     try {
-      await this.clientUpdateModel.updateVideoView(userId, videoId, viewed)
+      await this.clientUpdateModel.updateVideoView(uuid, videoId, viewed)
     } catch (error) {
       console.error('Error updating video view status:', error)
       throw new Error('Failed to update video view status.')
