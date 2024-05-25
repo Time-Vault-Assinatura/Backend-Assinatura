@@ -28,15 +28,4 @@ export class AdminDeleteModel {
       throw error
     }
   }
-
-  async deleteVideo(id: string) {
-    try {
-      return await this.prismaService.videos.delete({
-        where: { id },
-      })
-    } catch (error) {
-      console.error(error)
-      throw error
-    }
-  }
 }
