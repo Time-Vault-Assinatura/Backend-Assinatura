@@ -25,3 +25,4 @@ export class ReadVideoService {
     return allVideosView
   }
 }
+// vai para main

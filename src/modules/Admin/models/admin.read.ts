@@ -74,10 +74,28 @@ export class AdminReadModel {
 
   async getAllFeedbacks() {
     try {
-      const result = await this.prismaService.feedbacks.findMany()
+      const result = await this.prismaService.feedbacks.findMany({
+      include: {
+        user: {
+          select: {
+            name: true  // Isso garantirá que apenas o nome do usuário seja retornado
+          }
+        }
+      }
+    });
       return result
     } catch (error) {
       console.error('erro ao buscar os feedbacks de ususario', error)
+      throw error
+    }
+  }
+
+  async getAllVideos() {
+    try {
+      const result = await this.prismaService.videos.findMany()
+      return result
+    } catch (error) {
+      console.error('Erro ao buscar videos', error)
       throw error
     }
   }

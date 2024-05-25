@@ -17,7 +17,9 @@ export class AdminUpdateModel {
           precoAtual: price.toString(),
         },
       })
-    } catch (error) {}
+    } catch (error) {
+      console.error('Error updating name and price', error)
+    }
   }
 
   async updateCriptoImage(idCMC: number, imagem: string) {

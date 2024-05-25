@@ -35,3 +35,4 @@ export class DeleteCriptoService {
     }
   }
 }
+// vai para main
