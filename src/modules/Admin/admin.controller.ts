@@ -186,7 +186,7 @@ export class AdminController {
   }
 
   @Get('get-all-videos')
-  async getAllVideos(){
+  async getAllVideos() {
     return await this.readVideoService.getAllVideos()
   }
 }

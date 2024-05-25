@@ -14,4 +14,14 @@ export class ReadVideoService {
 
     return allVideos
   }
+
+  async getVideosView() {
+    const allVideosView = await this.clientReadModel.getVideosView()
+
+    if (allVideosView.length === 0) {
+      return 'nenhuma visualização foi encontrada'
+    }
+
+    return allVideosView
+  }
 }

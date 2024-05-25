@@ -51,7 +51,7 @@ export class ClientReadModel {
   async getAllVideos() {
     try {
       const result = await this.prismaService.videos.findMany({
-        where:{
+        where: {
           isVisible: true,
         },
       })
@@ -78,5 +78,15 @@ export class ClientReadModel {
       },
     })
     return Boolean(user)
+  }
+
+  async getVideosView() {
+    try {
+      const result = await this.prismaService.videoView.findMany()
+      return result
+    } catch (error) {
+      console.log('erro ao buscar visualizações de videos', error)
+      throw error
+    }
   }
 }
