@@ -67,26 +67,32 @@ export class ClientController {
     )
   }
 
-  //   @UseGuards(AuthGuardUser)
+  @UseGuards(AuthGuardUser)
   @Get('get-all-videos')
   async getAllVideos() {
     return await this.readVideoService.getAllVideos()
   }
 
-  //   @UseGuards(AuthGuardUser)
+  @UseGuards(AuthGuardUser)
   @Patch('update-view')
   async toggleVideoView(
+    @Req() req,
     @Body()
     body: {
-      userId: string
       videoId: string
       viewed: boolean
     },
   ) {
     return await this.updateVideoService.updateVideoView(
-      body.userId,
+      req.uuid,
       body.videoId,
       body.viewed,
     )
+  }
+
+  @UseGuards(AuthGuardUser)
+  @Get('get-view')
+  async getVideosView() {
+    return await this.readVideoService.getVideosView()
   }
 }

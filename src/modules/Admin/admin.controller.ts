@@ -23,6 +23,7 @@ import { ReadUserService } from './services/readUser/read.user.service'
 import { CreateVideoService } from './services/createVideo/create.video.service'
 import { UpdateVideoService } from './services/updateVideo/update.video.service'
 import { DeleteVideoService } from './services/deleteVideo/delete.video.service'
+import { ReadVideoService } from './services/readVideos/read.video.service'
 
 @Controller('admin')
 export class AdminController {
@@ -36,6 +37,7 @@ export class AdminController {
     private readonly createVideoService: CreateVideoService,
     private readonly updateVideoService: UpdateVideoService,
     private readonly deleteVideoService: DeleteVideoService,
+    private readonly readVideoService: ReadVideoService,
   ) {}
 
   @UseGuards(AuthGuardAdmin)
@@ -135,7 +137,7 @@ export class AdminController {
     return await this.automaticCronService.fetchAndSaveCryptocurrencyImage()
   }
 
-  //   @UseGuards(AuthGuardAdmin)
+  @UseGuards(AuthGuardAdmin)
   @Post('add-video')
   async addVideo(
     @Body()
@@ -147,12 +149,13 @@ export class AdminController {
       classTime: string
       videoUrl: string
       bannerUrl?: string
+      isVisible?: boolean
     },
   ) {
     return await this.createVideoService.addVideo(videoInfo)
   }
 
-  //   @UseGuards(AuthGuardAdmin)
+  @UseGuards(AuthGuardAdmin)
   @Patch('update-video')
   async updateVideo(
     @Body()
@@ -171,7 +174,7 @@ export class AdminController {
     return await this.updateVideoService.updateVideo(videoInfo)
   }
 
-  //   @UseGuards(AuthGuardAdmin)
+  @UseGuards(AuthGuardAdmin)
   @Delete('delete-video')
   async deleteVideo(
     @Body()
@@ -180,5 +183,11 @@ export class AdminController {
     },
   ) {
     return await this.deleteVideoService.deleteVideo(body.id)
+  }
+
+  @UseGuards(AuthGuardAdmin)
+  @Get('get-all-videos')
+  async getAllVideos() {
+    return await this.readVideoService.getAllVideos()
   }
 }

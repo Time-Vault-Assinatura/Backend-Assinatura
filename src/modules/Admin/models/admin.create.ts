@@ -43,6 +43,7 @@ export class AdminCreateModel {
     classTime: string
     videoUrl: string
     bannerUrl?: string
+    isVisible?: boolean
   }) {
     try {
       const {
@@ -53,6 +54,7 @@ export class AdminCreateModel {
         classTime,
         videoUrl,
         bannerUrl,
+        isVisible
       } = videoInfo
       const result = await this.prismaService.videos.create({
         data: {
@@ -63,6 +65,7 @@ export class AdminCreateModel {
           classTime,
           videoUrl,
           bannerUrl,
+          isVisible
         },
       })
       return result
