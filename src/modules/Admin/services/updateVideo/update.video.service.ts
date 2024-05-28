@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { AdminUpdateModel } from '../../models/admin.update'
+import { AdminReadModel } from '../../models/admin.read'
 
 @Injectable()
 export class UpdateVideoService {
-  constructor(private readonly adminUpdateModel: AdminUpdateModel) {}
+  constructor(
+    private readonly adminUpdateModel: AdminUpdateModel,
+    private readonly adminReadModel: AdminReadModel,
+  ) {}
 
   async updateVideo(videoInfo: {
     id: string
@@ -18,9 +22,21 @@ export class UpdateVideoService {
   }) {
     // validação se já existe uma aula com esse nome
     // validação se ja existe um video com mesma url
-    // validação se o classorder dentro do modulo não é igual a outro existente,EX: não podem ter duas aulas 1
+
+    const validClassOrder = await this.adminReadModel.getClassOrderByModule(
+      videoInfo.module,
+      videoInfo.classOrder,
+    )
+
     try {
+      if (validClassOrder.length !== 0) {
+        await this.adminUpdateModel.updateIncreaseClassOrder(
+          videoInfo.module,
+          videoInfo.classOrder,
+        )
+      }
       const result = await this.adminUpdateModel.updateVideo(videoInfo)
+
       return result
     } catch (error) {
       console.error('erro desconhecido:', error)
