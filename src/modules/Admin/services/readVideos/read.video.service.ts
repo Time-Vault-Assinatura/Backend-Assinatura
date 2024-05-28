@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { AdminReadModel } from '../../models/admin.read'
 
 @Injectable()
@@ -9,10 +9,12 @@ export class ReadVideoService {
     const allVideos = await this.adminReadModel.getAllVideos()
 
     if (allVideos.length === 0) {
-      return 'nenhum video encontrado'
+      throw new HttpException(
+        'Ainda não existe nenhum video.',
+        HttpStatus.NO_CONTENT,
+      )
     }
 
-    return allVideos
+    return { statusCode: HttpStatus.OK, allVideos }
   }
 }
-// vai para main

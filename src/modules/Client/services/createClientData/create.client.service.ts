@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ClientCreateModel } from '../../models/client.create'
 
 @Injectable()
@@ -21,10 +21,14 @@ export class CreateUserService {
         nps,
       )
       return {
+        statusCode: HttpStatus.OK,
         message: `O feedback do cliente foi adicionado com sucesso, categoria: "${categoria}", assunto: "${assunto}",  feedback: "${feedback}", nps: "${nps}"`,
       }
     } catch (error) {
-      throw new Error('erro')
+      throw new HttpException(
+        'Falha ao enviar feedback.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 }

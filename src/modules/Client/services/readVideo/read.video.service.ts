@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ClientReadModel } from '../../models/client.read'
 
 @Injectable()
@@ -9,20 +9,23 @@ export class ReadVideoService {
     const allVideos = await this.clientReadModel.getAllVideos()
 
     if (allVideos.length === 0) {
-      return 'nenhum video encontrado'
+      throw new HttpException('Nenhum video encontrado.', HttpStatus.NO_CONTENT)
     }
 
-    return allVideos
+    return { statusCode: HttpStatus.OK, allVideos }
   }
 
   async getVideosView() {
     const allVideosView = await this.clientReadModel.getVideosView()
 
     if (allVideosView.length === 0) {
-      return 'nenhuma visualização foi encontrada'
+      throw new HttpException(
+        'nenhuma visualização foi encontrada',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
 
-    return allVideosView
+    return { statusCode: HttpStatus.OK, allVideosView }
   }
 }
 // vai para main

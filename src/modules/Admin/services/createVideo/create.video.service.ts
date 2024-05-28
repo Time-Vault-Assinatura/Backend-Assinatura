@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { AdminCreateModel } from '../../models/admin.create'
 import { AdminReadModel } from '../../models/admin.read'
 import { AdminUpdateModel } from '../../models/admin.update'
@@ -21,9 +21,22 @@ export class CreateVideoService {
     bannerUrl?: string
     isVisible?: boolean
   }) {
-    // validação se o modulo existe
-    // validação se já existe uma aula com esse nome
-    // validação se ja existe um video com mesma url
+    const existingVideoUrl = await this.adminReadModel.existsVideoUrl()
+    if (existingVideoUrl.includes(videoInfo.videoUrl)) {
+      throw new HttpException(
+        `O url '${videoInfo.videoUrl}' já existe.`,
+        HttpStatus.CONFLICT,
+      )
+    }
+
+    const existingClassNames = await this.adminReadModel.existsClassName()
+    if (existingClassNames.includes(videoInfo.className)) {
+      throw new HttpException(
+        `O nome da classe '${videoInfo.className}' já existe.`,
+        HttpStatus.CONFLICT,
+      )
+    }
+
     const validClassOrder = await this.adminReadModel.getClassOrderByModule(
       videoInfo.module,
       videoInfo.classOrder,
@@ -39,11 +52,15 @@ export class CreateVideoService {
         )
       }
 
-      return result
+      return {
+        statusCode: HttpStatus.OK,
+        message: `O video foi adicionado com sucesso: ${result}`,
+      }
     } catch (error) {
-      console.error('erro desconhecido:', error)
-      throw new Error('um erro desconhecido ocorreu')
+      throw new HttpException(
+        'Falha ao adicionar uma cripto.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 }
-// vai para main
