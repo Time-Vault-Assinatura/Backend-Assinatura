@@ -75,14 +75,14 @@ export class AdminReadModel {
   async getAllFeedbacks() {
     try {
       const result = await this.prismaService.feedbacks.findMany({
-      include: {
-        user: {
-          select: {
-            name: true  // Isso garantirá que apenas o nome do usuário seja retornado
-          }
-        }
-      }
-    });
+        include: {
+          user: {
+            select: {
+              name: true, // Isso garantirá que apenas o nome do usuário seja retornado
+            },
+          },
+        },
+      })
       return result
     } catch (error) {
       console.error('erro ao buscar os feedbacks de ususario', error)
@@ -96,6 +96,35 @@ export class AdminReadModel {
       return result
     } catch (error) {
       console.error('Erro ao buscar videos', error)
+      throw error
+    }
+  }
+
+  async getClassOrderByModule(module: string, classOrder: number) {
+    try {
+      const result = await this.prismaService.videos.findMany({
+        where: {
+          module,
+          classOrder,
+        },
+      })
+      return result
+    } catch (error) {
+      console.error('erro ao buscar classOrder pelo modulo ', error)
+      throw error
+    }
+  }
+
+  async getVideoById(id: string) {
+    try {
+      const result = await this.prismaService.videos.findUnique({
+        where: {
+          id,
+        },
+      })
+      return result
+    } catch (error) {
+      console.error('Erro ao buscar video pelo id', error)
       throw error
     }
   }
