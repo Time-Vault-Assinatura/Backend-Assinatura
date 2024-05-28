@@ -89,7 +89,7 @@ export class AdminReadModel {
       throw error
     }
   }
-
+  
   async getAllVideos() {
     try {
       const result = await this.prismaService.videos.findMany()
@@ -128,4 +128,13 @@ export class AdminReadModel {
       throw error
     }
   }
+}
+
+  async existsCripto(id: string): Promise<boolean> {
+  const count = await this.prismaService.cripto_data.count({
+    where: {
+      id: id,
+    }
+  });
+  return count > 0;
 }
