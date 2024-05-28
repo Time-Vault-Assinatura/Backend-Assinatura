@@ -178,4 +178,49 @@ export class AdminUpdateModel {
       console.error(`Error update video class ${videoInfo.id}:`, error)
     }
   }
+
+  async updateIncreaseClassOrder(module: string, classOrder: number) {
+    try {
+      // Atualizar os classOrder de outras aulas no mesmo módulo e com classOrder >= do novo vídeo
+      const result = await this.prismaService.videos.updateMany({
+        where: {
+          module,
+          classOrder: {
+            gte: classOrder,
+          },
+        },
+        data: {
+          classOrder: {
+            increment: 1,
+          },
+        },
+      })
+
+      return result
+    } catch (error) {
+      console.error('erro desconhecido:', error)
+      throw new Error('um erro desconhecido ocorreu')
+    }
+  }
+
+  async updatedecreaseClassOrder(module: string, classOrder: number) {
+    try {
+      await this.prismaService.videos.updateMany({
+        where: {
+          module,
+          classOrder: {
+            gt: classOrder,
+          },
+        },
+        data: {
+          classOrder: {
+            decrement: 1,
+          },
+        },
+      })
+    } catch (error) {
+      console.error('erro desconhecido:', error)
+      throw new Error('um erro desconhecido ocorreu')
+    }
+  }
 }

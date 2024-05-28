@@ -137,7 +137,7 @@ export class AdminController {
     return await this.automaticCronService.fetchAndSaveCryptocurrencyImage()
   }
 
-  //   @UseGuards(AuthGuardAdmin)
+  @UseGuards(AuthGuardAdmin)
   @Post('add-video')
   async addVideo(
     @Body()
@@ -155,7 +155,7 @@ export class AdminController {
     return await this.createVideoService.addVideo(videoInfo)
   }
 
-  //   @UseGuards(AuthGuardAdmin)
+  @UseGuards(AuthGuardAdmin)
   @Patch('update-video')
   async updateVideo(
     @Body()
@@ -174,7 +174,7 @@ export class AdminController {
     return await this.updateVideoService.updateVideo(videoInfo)
   }
 
-  //   @UseGuards(AuthGuardAdmin)
+  @UseGuards(AuthGuardAdmin)
   @Delete('delete-video')
   async deleteVideo(
     @Body()
@@ -185,6 +185,7 @@ export class AdminController {
     return await this.deleteVideoService.deleteVideo(body.id)
   }
 
+  @UseGuards(AuthGuardAdmin)
   @Get('get-all-videos')
   async getAllVideos() {
     return await this.readVideoService.getAllVideos()
