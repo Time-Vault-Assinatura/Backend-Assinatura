@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { AdminDeleteModel } from '../../models/admin.delete'
 import { AdminReadModel } from '../../models/admin.read'
 import { AdminUpdateModel } from '../../models/admin.update'
@@ -22,6 +22,10 @@ export class DeleteVideoService {
     try {
       const result = await this.adminDeleteModel.deleteVideo(id)
 
+      if (!result) {
+        throw new HttpException('Video não encontrado.', HttpStatus.NOT_FOUND)
+      }
+
       if (validClassOrder.length !== 0) {
         await this.adminUpdateModel.updatedecreaseClassOrder(
           getVideoInformation.module,
@@ -29,12 +33,18 @@ export class DeleteVideoService {
         )
       }
 
-      return result
+      return { statusCode: HttpStatus.OK, result }
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new Error('Registro não encontrado.')
+        throw new HttpException(
+          'Registro não encontrado.',
+          HttpStatus.NOT_FOUND,
+        )
       }
-      throw new Error('Erro do Prisma ao deletar o registro.')
+      throw new HttpException(
+        'Erro do Prisma ao deletar o registro.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 }

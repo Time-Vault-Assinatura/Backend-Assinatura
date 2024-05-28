@@ -1,13 +1,13 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { AdminUpdateModel } from '../../models/admin.update';
-import { Wallets } from '../../DTO/wallet.dto';
-import { AdminReadModel } from '../../models/admin.read';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
+import { AdminUpdateModel } from '../../models/admin.update'
+import { Wallets } from '../../DTO/wallet.dto'
+import { AdminReadModel } from '../../models/admin.read'
 
 @Injectable()
 export class UpdateCriptoService {
   constructor(
     private readonly adminUpdateModel: AdminUpdateModel,
-    private readonly adminReadModel: AdminReadModel
+    private readonly adminReadModel: AdminReadModel,
   ) {}
 
   async updateEntryAndAllocation(criptoDetails: {
@@ -16,9 +16,11 @@ export class UpdateCriptoService {
     alocacao?: string
     data_entrada?: Date | string
   }) {
-
-    if (!await this.adminReadModel.existsCripto(criptoDetails.id)) {
-      throw new HttpException(`Criptomoeda com ID ${criptoDetails.id} não encontrada.`, HttpStatus.NOT_FOUND);
+    if (!(await this.adminReadModel.existsCripto(criptoDetails.id))) {
+      throw new HttpException(
+        `Criptomoeda com ID ${criptoDetails.id} não encontrada.`,
+        HttpStatus.NOT_FOUND,
+      )
     }
 
     const updateData: {
@@ -43,46 +45,68 @@ export class UpdateCriptoService {
     }
 
     try {
-      await this.adminUpdateModel.updateCriptoEntryAndAllocation(
+      const result = await this.adminUpdateModel.updateCriptoEntryAndAllocation(
         criptoDetails.id,
         updateData,
       )
+      return { statusCode: HttpStatus.OK, result }
     } catch (error) {
-      console.error('Erro ao atualizar detalhes da criptomoeda:', error);
-      throw new HttpException('Falha ao atualizar detalhes da criptomoeda.', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.error('Erro ao atualizar detalhes da criptomoeda:', error)
+      throw new HttpException(
+        'Falha ao atualizar detalhes da criptomoeda.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 
   async updateVisibility(id: string, isVisible: boolean) {
-
-    if (!await this.adminReadModel.existsCripto(id)) {
-      throw new HttpException(`Criptomoeda com ID ${id} não encontrada.`, HttpStatus.NOT_FOUND);
+    if (!(await this.adminReadModel.existsCripto(id))) {
+      throw new HttpException(
+        `Criptomoeda com ID ${id} não encontrada.`,
+        HttpStatus.NOT_FOUND,
+      )
     }
 
     try {
-      await this.adminUpdateModel.updateCriptoDataVisibility(id, isVisible)
+      const result = await this.adminUpdateModel.updateCriptoDataVisibility(
+        id,
+        isVisible,
+      )
+      return { statusCode: HttpStatus.OK, result }
     } catch (error) {
-      console.error('Error updating crypto visibility:', error);
-      throw new HttpException('Falha ao atualizar visibilidade da criptomoeda.', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.error('Error updating crypto visibility:', error)
+      throw new HttpException(
+        'Falha ao atualizar visibilidade da criptomoeda.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 
   async updateWallet(id: string, wallet: Wallets) {
-
-    if (!await this.adminReadModel.existsCripto(id)) {
-      throw new HttpException(`Criptomoeda com ID ${id} não encontrada.`, HttpStatus.NOT_FOUND);
+    if (!(await this.adminReadModel.existsCripto(id))) {
+      throw new HttpException(
+        `Criptomoeda com ID ${id} não encontrada.`,
+        HttpStatus.NOT_FOUND,
+      )
     }
 
-    const validWallets: Wallets[] = ['CONSERVADORA', 'MODERADA', 'ARROJADA'];
+    const validWallets: Wallets[] = ['CONSERVADORA', 'MODERADA', 'ARROJADA']
     if (!validWallets.includes(wallet)) {
-      throw new HttpException(`Tipo de carteira inválido. Tipos de carteira validos: ${validWallets.join(', ')}.`, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        `Tipo de carteira inválido. Tipos de carteira validos: ${validWallets.join(', ')}.`,
+        HttpStatus.BAD_REQUEST,
+      )
     }
 
     try {
-      await this.adminUpdateModel.updateWallet(id, wallet);
+      const result = await this.adminUpdateModel.updateWallet(id, wallet)
+      return { statusCode: HttpStatus.OK, result }
     } catch (error) {
-      console.error('Erro ao selecionar a carteira do ativo:', error);
-      throw new HttpException('Falha ao atualizar a carteira.', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.error('Erro ao selecionar a carteira do ativo:', error)
+      throw new HttpException(
+        'Falha ao atualizar a carteira.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 }

@@ -89,7 +89,7 @@ export class AdminReadModel {
       throw error
     }
   }
-  
+
   async getAllVideos() {
     try {
       const result = await this.prismaService.videos.findMany()
@@ -128,13 +128,41 @@ export class AdminReadModel {
       throw error
     }
   }
-}
 
   async existsCripto(id: string): Promise<boolean> {
-  const count = await this.prismaService.cripto_data.count({
-    where: {
-      id: id,
+    const count = await this.prismaService.cripto_data.count({
+      where: {
+        id,
+      },
+    })
+    return count > 0
+  }
+
+  async existsClassName() {
+    try {
+      const result = await this.prismaService.videos.findMany({
+        select: {
+          className: true,
+        },
+      })
+      return result.map((video) => video.className)
+    } catch (error) {
+      console.error('Erro ao buscar os nomes das video aulas', error)
+      throw error
     }
-  });
-  return count > 0;
+  }
+
+  async existsVideoUrl() {
+    try {
+      const result = await this.prismaService.videos.findMany({
+        select: {
+          videoUrl: true,
+        },
+      })
+      return result.map((video) => video.videoUrl)
+    } catch (error) {
+      console.error('Erro ao buscar os urls das video aulas', error)
+      throw error
+    }
+  }
 }

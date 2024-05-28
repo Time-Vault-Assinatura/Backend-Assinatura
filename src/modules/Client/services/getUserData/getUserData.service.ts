@@ -1,5 +1,5 @@
 // user-data.service.ts
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ClientReadModel } from '../../models/client.read'
 
 @Injectable()
@@ -10,12 +10,17 @@ export class UserDataService {
     try {
       const userData = await this.clientReadModel.getUserData(email)
       if (!userData) {
-        return { message: 'Usuário não encontrado.' }
+        throw new HttpException(
+          'Usuário não encontrado.',
+          HttpStatus.NO_CONTENT,
+        )
       }
-      return userData
+      return { statusCode: HttpStatus.OK, userData }
     } catch (error) {
-      console.log('Erro ao buscar dados do usuário:', error)
-      throw new Error('Falha ao buscar dados do usuário')
+      throw new HttpException(
+        'Erro ao buscar dados do usuário',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 }
