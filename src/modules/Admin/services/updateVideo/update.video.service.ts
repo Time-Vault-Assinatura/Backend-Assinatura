@@ -29,14 +29,14 @@ export class UpdateVideoService {
     )
 
     try {
-      const result = await this.adminUpdateModel.updateVideo(videoInfo)
-
       if (validClassOrder.length !== 0) {
         await this.adminUpdateModel.updateIncreaseClassOrder(
           videoInfo.module,
           videoInfo.classOrder,
         )
       }
+      const result = await this.adminUpdateModel.updateVideo(videoInfo)
+
       return result
     } catch (error) {
       console.error('erro desconhecido:', error)
