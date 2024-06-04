@@ -10,7 +10,6 @@ import { AppController } from './app.controller'
 
 @Module({
   imports: [
-    AppController,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -36,7 +35,7 @@ import { AppController } from './app.controller'
       },
     }),
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}
