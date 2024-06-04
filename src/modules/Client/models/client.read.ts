@@ -89,4 +89,14 @@ export class ClientReadModel {
       throw error
     }
   }
+
+  async getUpdate() {
+    try {
+      const result = await this.prismaService.update.findMany()
+      return result
+    } catch (error) {
+      console.log('erro ao buscar atualizações', error)
+      throw error
+    }
+  }
 }

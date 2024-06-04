@@ -11,6 +11,9 @@ import { CreateVideoService } from './createVideo/create.video.service'
 import { UpdateVideoService } from './updateVideo/update.video.service'
 import { DeleteVideoService } from './deleteVideo/delete.video.service'
 import { ReadVideoService } from './readVideos/read.video.service'
+import { CreateUpdateService } from './createUpdate/create.update.service'
+import { DeleteUpdateService } from './deleteUpdate/delete.update.service'
+import { UpdateUpdateService } from './updateUpdate/update.update.service'
 
 @Module({
   imports: [AdminModelModule, HttpModule],
@@ -25,6 +28,9 @@ import { ReadVideoService } from './readVideos/read.video.service'
     UpdateVideoService,
     DeleteVideoService,
     ReadVideoService,
+    CreateUpdateService,
+    DeleteUpdateService,
+    UpdateUpdateService,
   ],
   exports: [
     CreateCriptoService,
@@ -37,6 +43,9 @@ import { ReadVideoService } from './readVideos/read.video.service'
     UpdateVideoService,
     DeleteVideoService,
     ReadVideoService,
+    CreateUpdateService,
+    DeleteUpdateService,
+    UpdateUpdateService,
   ],
 })
 export class AdminServiceModule {}

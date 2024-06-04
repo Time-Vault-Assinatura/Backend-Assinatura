@@ -54,7 +54,7 @@ export class AdminCreateModel {
         classTime,
         videoUrl,
         bannerUrl,
-        isVisible
+        isVisible,
       } = videoInfo
       const result = await this.prismaService.videos.create({
         data: {
@@ -65,12 +65,26 @@ export class AdminCreateModel {
           classTime,
           videoUrl,
           bannerUrl,
-          isVisible
+          isVisible,
         },
       })
       return result
     } catch (error) {
       console.error('Error adding video class:', error)
+    }
+  }
+
+  async addUpdate(update: string, updateDate: string) {
+    try {
+      const result = await this.prismaService.update.create({
+        data: {
+          update,
+          updateDate,
+        },
+      })
+      return result
+    } catch (error) {
+      console.error('Error adding update:', error)
     }
   }
 }

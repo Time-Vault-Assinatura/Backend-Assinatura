@@ -223,4 +223,21 @@ export class AdminUpdateModel {
       throw new Error('um erro desconhecido ocorreu')
     }
   }
+
+  async updateUpdate(id: number, update?: string, updateDate?: string) {
+    try {
+      await this.prismaService.update.updateMany({
+        where: {
+          id,
+        },
+        data: {
+          update,
+          updateDate,
+        },
+      })
+    } catch (error) {
+      console.log('Erro desconhecido:', error)
+      throw new Error('um erro desconhecido ocorreu')
+    }
+  }
 }
