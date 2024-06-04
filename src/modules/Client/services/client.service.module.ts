@@ -6,6 +6,7 @@ import { UserDataService } from './getUserData/getUserData.service'
 import { CreateUserService } from './createClientData/create.client.service'
 import { ReadVideoService } from './readVideo/read.video.service'
 import { UpdateVideoService } from './updateVideo/update.video.service'
+import { GetUpdateService } from './getUpdate/get.update.service'
 
 @Module({
   imports: [ClientModelModule, HttpModule],
@@ -15,6 +16,7 @@ import { UpdateVideoService } from './updateVideo/update.video.service'
     CreateUserService,
     ReadVideoService,
     UpdateVideoService,
+    GetUpdateService,
   ],
   exports: [
     GetAllCriptoService,
@@ -22,6 +24,7 @@ import { UpdateVideoService } from './updateVideo/update.video.service'
     CreateUserService,
     ReadVideoService,
     UpdateVideoService,
+    GetUpdateService,
   ],
 })
 export class ClientServiceModule {}

@@ -16,6 +16,7 @@ import { Wallets } from '../Admin/DTO/wallet.dto'
 import { CreateUserService } from './services/createClientData/create.client.service'
 import { ReadVideoService } from './services/readVideo/read.video.service'
 import { UpdateVideoService } from './services/updateVideo/update.video.service'
+import { GetUpdateService } from './services/getUpdate/get.update.service'
 
 @Controller('user')
 export class ClientController {
@@ -25,6 +26,7 @@ export class ClientController {
     private readonly createUserService: CreateUserService,
     private readonly readVideoService: ReadVideoService,
     private readonly updateVideoService: UpdateVideoService,
+    private readonly getUpdateService: GetUpdateService,
   ) {}
 
   @UseGuards(AuthGuardUser)
@@ -94,5 +96,11 @@ export class ClientController {
   @Get('get-view')
   async getVideosView() {
     return await this.readVideoService.getVideosView()
+  }
+
+  @UseGuards(AuthGuardUser)
+  @Get('get-all-updates')
+  async getAllUpdates() {
+    return await this.getUpdateService.getUpdate()
   }
 }

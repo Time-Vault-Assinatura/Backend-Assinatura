@@ -165,4 +165,16 @@ export class AdminReadModel {
       throw error
     }
   }
+
+  async getUpdateById(id: number) {
+    try {
+      const result = await this.prismaService.update.findUnique({
+        where: { id },
+      })
+      return result
+    } catch (error) {
+      console.log('Erro ao buscar updates', error)
+      throw error
+    }
+  }
 }
