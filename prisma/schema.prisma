@@ -93,3 +93,16 @@ model VideoView {
 
   @@unique([videoId, userId]) 
 }
+
+model Updates {
+    id Int @id @default(autoincrement())
+    update String 
+    updateDate String
+}
+
+model profit_Graph{
+    id String @id @default(uuid())
+    profit String 
+    Date String
+    Wallet String
+}
