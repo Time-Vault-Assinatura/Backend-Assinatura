@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/config/prisma/prisma.service'
+import { Wallets } from '../DTO/wallet.dto'
 
 @Injectable()
 export class AdminReadModel {
@@ -174,6 +175,24 @@ export class AdminReadModel {
       return result
     } catch (error) {
       console.log('Erro ao buscar updates', error)
+      throw error
+    }
+  }
+
+  async getAllCriptoDataFiltred(wallet: Wallets) {
+    try {
+      const allCriptoData = await this.prismaService.cripto_data.findMany({
+        where: {
+          isVisible: true,
+          wallet,
+        },
+      })
+      return allCriptoData
+    } catch (error) {
+      console.error(
+        'Erro ao buscar dados de criptomoedas sem campos nulos:',
+        error,
+      )
       throw error
     }
   }

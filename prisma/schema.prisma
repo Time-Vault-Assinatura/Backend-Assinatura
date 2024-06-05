@@ -103,6 +103,6 @@ model Update {
 model Profit_graph{
     id String @id @default(uuid())
     profit String 
-    Date String
-    Wallet String
+    date String
+    wallet String
 }

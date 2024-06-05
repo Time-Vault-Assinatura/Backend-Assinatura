@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/config/prisma/prisma.service'
+import { Wallets } from '../DTO/wallet.dto'
 
 @Injectable()
 export class AdminCreateModel {
@@ -85,6 +86,24 @@ export class AdminCreateModel {
       return result
     } catch (error) {
       console.error('Error adding update:', error)
+    }
+  }
+
+  async addProfitAndDateInGraph(profit: string, wallet: Wallets){
+
+    const today = new Date().toISOString().slice(0, 10); // Formato AAAA-MM-DD
+
+    try{
+      await this.prismaService.profit_graph.create({
+        data: {
+          profit,
+          date: today,
+          wallet: wallet,
+        },
+      });
+    } catch(error){
+      console.error(error)
+      throw error
     }
   }
 }
