@@ -89,19 +89,18 @@ export class AdminCreateModel {
     }
   }
 
-  async addProfitAndDateInGraph(profit: string, wallet: Wallets){
+  async addProfitAndDateInGraph(profit: string, wallet: Wallets) {
+    const today = new Date().toISOString().slice(0, 10) // Formato AAAA-MM-DD
 
-    const today = new Date().toISOString().slice(0, 10); // Formato AAAA-MM-DD
-
-    try{
+    try {
       await this.prismaService.profit_graph.create({
         data: {
           profit,
           date: today,
-          wallet: wallet,
+          wallet,
         },
-      });
-    } catch(error){
+      })
+    } catch (error) {
       console.error(error)
       throw error
     }

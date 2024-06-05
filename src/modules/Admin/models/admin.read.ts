@@ -190,7 +190,7 @@ export class AdminReadModel {
       return allCriptoData
     } catch (error) {
       console.error(
-        'Erro ao buscar dados de criptomoedas sem campos nulos:',
+        'Erro ao buscar dados de criptomoedas "isVisible:true":',
         error,
       )
       throw error

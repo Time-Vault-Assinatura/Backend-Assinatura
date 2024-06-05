@@ -259,5 +259,7 @@ export class AutomaticCronService {
     await this.calculateRentability()
     await this.calculateCurrentAllocation()
     await this.calculateProfitForGraph('CONSERVADORA')
+    await this.calculateProfitForGraph('MODERADA')
+    await this.calculateProfitForGraph('ARROJADA')
   }
 }
