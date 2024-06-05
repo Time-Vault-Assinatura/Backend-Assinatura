@@ -17,6 +17,7 @@ import { CreateUserService } from './services/createClientData/create.client.ser
 import { ReadVideoService } from './services/readVideo/read.video.service'
 import { UpdateVideoService } from './services/updateVideo/update.video.service'
 import { GetUpdateService } from './services/getUpdate/get.update.service'
+import { ReadProfitGraph } from './services/readProfitGraph/read.profitGraph.service'
 
 @Controller('user')
 export class ClientController {
@@ -27,6 +28,7 @@ export class ClientController {
     private readonly readVideoService: ReadVideoService,
     private readonly updateVideoService: UpdateVideoService,
     private readonly getUpdateService: GetUpdateService,
+    private readonly readProfitGraph: ReadProfitGraph,
   ) {}
 
   @UseGuards(AuthGuardUser)
@@ -102,5 +104,11 @@ export class ClientController {
   @Get('get-all-updates')
   async getAllUpdates() {
     return await this.getUpdateService.getUpdate()
+  }
+
+  @UseGuards(AuthGuardUser)
+  @Get('get-profitGraph-data')
+  async getProfitGraphByWallet(wallet: Wallets) {
+    return await this.readProfitGraph.getProfitGraphByWallet(wallet)
   }
 }

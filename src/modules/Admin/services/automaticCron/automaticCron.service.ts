@@ -1,16 +1,18 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { HttpService } from '@nestjs/axios'
 import { AdminReadModel } from '../../models/admin.read'
 import { firstValueFrom } from 'rxjs'
 import { AdminUpdateModel } from '../../models/admin.update'
+import { AdminCreateModel } from '../../models/admin.create'
+import { Wallets } from '../../DTO/wallet.dto'
 
 interface CriptoData {
-  id: string;
-  precoAtual: string;
-  quantidade: string;
-  valorInvestido?: string; // Adicione '?' se este campo pode não estar presente inicialmente
-  wallet?: string;
+  id: string
+  precoAtual: string
+  quantidade: string
+  valorInvestido?: string
+  wallet?: string
 }
 
 @Injectable()
@@ -18,6 +20,7 @@ export class AutomaticCronService {
   constructor(
     private readonly adminReadModel: AdminReadModel,
     private readonly adminUpdateModel: AdminUpdateModel,
+    private readonly adminCreateModel: AdminCreateModel,
     private readonly httpService: HttpService,
   ) {}
 
@@ -159,51 +162,87 @@ export class AutomaticCronService {
   }
 
   private async calculateCurrentAllocation() {
-    const criptoDatas = await this.adminReadModel.getAllCriptoDataWherePriceAndQuantityIsNotNull();
+    const criptoDatas =
+      await this.adminReadModel.getAllCriptoDataWherePriceAndQuantityIsNotNull()
 
     // Definindo o tipo de walletGroups
-    const walletGroups: Record<string, CriptoData[]> = criptoDatas.reduce((groups, cripto) => {
-        const key = cripto.wallet || 'default'; // Assumindo 'default' para quando não houver wallet definida
-        groups[key] = groups[key] || [];
-        groups[key].push(cripto);
-        return groups;
-    }, {});
+    const walletGroups: Record<string, CriptoData[]> = criptoDatas.reduce(
+      (groups, cripto) => {
+        const key = cripto.wallet || 'default' // Assumindo 'default' para quando não houver wallet definida
+        groups[key] = groups[key] || []
+        groups[key].push(cripto)
+        return groups
+      },
+      {},
+    )
 
     // Processar cada grupo de carteira
     for (const [wallet, criptos] of Object.entries(walletGroups)) {
-        let totalInvestedValue = 0;
+      let totalInvestedValue = 0
 
-        // Calcular o total investido para a carteira atual
-        for (const cripto of criptos) {
-            const precoAtual = parseFloat(cripto.precoAtual);
-            const quantidade = parseFloat(cripto.quantidade);
-            const valorInvestido = quantidade * precoAtual;
-            totalInvestedValue += valorInvestido;
+      // Calcular o total investido para a carteira atual
+      for (const cripto of criptos) {
+        const precoAtual = parseFloat(cripto.precoAtual)
+        const quantidade = parseFloat(cripto.quantidade)
+        const valorInvestido = quantidade * precoAtual
+        totalInvestedValue += valorInvestido
 
-            // Atualizar o valor investido no banco de dados
-            await this.adminUpdateModel.updateValueInvestment(
-                cripto.id,
-                valorInvestido,
-            );
-        }
+        // Atualizar o valor investido no banco de dados
+        await this.adminUpdateModel.updateValueInvestment(
+          cripto.id,
+          valorInvestido,
+        )
+      }
 
-        // Calcular e atualizar a alocação atual para cada ativo na carteira
-        for (const cripto of criptos) {
-            const valorInvestido = parseFloat(cripto.valorInvestido || '0');
-            const alocacaoAtual = (valorInvestido / totalInvestedValue) * 100;
+      // Calcular e atualizar a alocação atual para cada ativo na carteira
+      for (const cripto of criptos) {
+        const valorInvestido = parseFloat(cripto.valorInvestido || '0')
+        const alocacaoAtual = (valorInvestido / totalInvestedValue) * 100
 
-            await this.adminUpdateModel.updateAlocationCurrent(
-                cripto.id,
-                alocacaoAtual,
-            );
-        }
+        await this.adminUpdateModel.updateAlocationCurrent(
+          cripto.id,
+          alocacaoAtual,
+        )
+      }
     }
 
     return {
-        message: 'Alocação atual calculada e atualizada com sucesso para cada carteira.',
-    };
+      message:
+        'Alocação atual calculada e atualizada com sucesso para cada carteira.',
+    }
   }
 
+  async calculateProfitForGraph(wallet: Wallets) {
+    try {
+      const criptoDatas =
+        await this.adminReadModel.getAllCriptoDataFiltred(wallet)
+
+      if (!criptoDatas.length) {
+        throw new HttpException(
+          'Nenhuma criptomoeda encontrada para a carteira especificada',
+          HttpStatus.NOT_FOUND,
+        )
+      }
+
+      const totalInvested = criptoDatas.reduce(
+        (acc, cripto) => acc + parseFloat(cripto.valorInvestido),
+        0,
+      )
+      const baseInvestment = 2000
+      const rendimento =
+        ((totalInvested - baseInvestment) / baseInvestment) * 100
+
+      await this.adminCreateModel.addProfitAndDateInGraph(
+        rendimento.toString(),
+        wallet,
+      )
+
+      return { totalInvested, rendimento }
+    } catch (error) {
+      console.error('Erro ao calcular a rentabilidade para o gráfico:', error)
+      throw new HttpException('Erro interno', HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+  }
 
   @Cron('0 0 */7 * *')
   async handleCronFetchAndSaveCriptoImage() {
@@ -219,5 +258,8 @@ export class AutomaticCronService {
   async handleCron() {
     await this.calculateRentability()
     await this.calculateCurrentAllocation()
+    await this.calculateProfitForGraph('CONSERVADORA')
+    await this.calculateProfitForGraph('MODERADA')
+    await this.calculateProfitForGraph('ARROJADA')
   }
 }
