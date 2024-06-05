@@ -106,3 +106,10 @@ model Profit_graph{
     date String
     wallet String
 }
+
+model global_market_infos{
+    id Int @id @default(autoincrement())
+    informationName String @unique
+    informationValue String
+    information24hChange String
+}

@@ -219,7 +219,7 @@ export class AutomaticCronService {
 
       if (!criptoDatas.length) {
         throw new HttpException(
-          'Nenhuma criptomoeda encontrada para a carteira especificada',
+          `Nenhuma criptomoeda encontrada para a carteira ${wallet}`,
           HttpStatus.NOT_FOUND,
         )
       }
@@ -244,6 +244,55 @@ export class AutomaticCronService {
     }
   }
 
+  async fetchAndProcessGlobalMetrics() {
+    const apiKey = process.env.CMC_API_KEY
+    const url =
+      'https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest'
+    const options = {
+      headers: { 'X-CMC_PRO_API_KEY': apiKey },
+    }
+
+    try {
+      const response = await firstValueFrom(this.httpService.get(url, options))
+      const data = response.data.data
+
+      // Processar dados aqui
+      await this.processMarketData(data)
+    } catch (error) {
+      console.error(
+        'Error fetching global metrics:',
+        error.response?.data || error,
+      )
+      throw new Error('Failed to fetch global metrics')
+    }
+  }
+
+  private async processMarketData(data: any) {
+    await this.adminUpdateModel.updateOrCreateMarketInfo(
+      'btc_dominance',
+      data.btc_dominance.toString(),
+      data.btc_dominance_24h_percentage_change.toString(),
+    )
+
+    await this.adminUpdateModel.updateOrCreateMarketInfo(
+      'eth_dominance',
+      data.eth_dominance.toString(),
+      data.eth_dominance_24h_percentage_change.toString(),
+    )
+
+    await this.adminUpdateModel.updateOrCreateMarketInfo(
+      'total_market_cap',
+      data.quote.USD.total_market_cap.toString(),
+      data.quote.USD.total_market_cap_yesterday_percentage_change.toString(),
+    )
+
+    await this.adminUpdateModel.updateOrCreateMarketInfo(
+      'total_volume_24h',
+      data.quote.USD.total_volume_24h.toString(),
+      data.quote.USD.total_volume_24h_yesterday_percentage_change.toString(),
+    )
+  }
+
   @Cron('0 0 */7 * *')
   async handleCronFetchAndSaveCriptoImage() {
     await this.fetchAndSaveCryptocurrencyImage()
@@ -251,15 +300,55 @@ export class AutomaticCronService {
 
   @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCronFetchAndSaveCriptoData() {
-    await this.fetchAndSaveCryptocurrencyData()
+    try {
+      await this.fetchAndSaveCryptocurrencyData()
+    } catch (error) {
+      console.error('Error fetching and processing global metrics:', error)
+    }
+
+    try {
+      await this.fetchAndProcessGlobalMetrics()
+    } catch (error) {
+      console.error('Error fetching and processing global metrics:', error)
+    }
   }
 
   @Cron(CronExpression.EVERY_10_SECONDS)
   async handleCron() {
-    await this.calculateRentability()
-    await this.calculateCurrentAllocation()
-    await this.calculateProfitForGraph('CONSERVADORA')
-    await this.calculateProfitForGraph('MODERADA')
-    await this.calculateProfitForGraph('ARROJADA')
+    try {
+      await this.calculateRentability()
+    } catch (error) {
+      console.error('Error calculating rentability:', error)
+    }
+
+    try {
+      await this.calculateCurrentAllocation()
+    } catch (error) {
+      console.error('Error calculating current allocation:', error)
+    }
+  }
+
+  @Cron('0 0 12 * * *')
+  async getProfitForGraph() {
+    try {
+      await this.calculateProfitForGraph('CONSERVADORA')
+    } catch (error) {
+      console.error(
+        'Error calculating profit for conservative portfolio:',
+        error,
+      )
+    }
+
+    try {
+      await this.calculateProfitForGraph('MODERADA')
+    } catch (error) {
+      console.error('Error calculating profit for moderate portfolio:', error)
+    }
+
+    try {
+      await this.calculateProfitForGraph('ARROJADA')
+    } catch (error) {
+      console.error('Error calculating profit for aggressive portfolio:', error)
+    }
   }
 }

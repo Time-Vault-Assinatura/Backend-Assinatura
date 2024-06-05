@@ -240,4 +240,26 @@ export class AdminUpdateModel {
       throw new Error('um erro desconhecido ocorreu')
     }
   }
+
+  async updateOrCreateMarketInfo(name: string, value: string, change: string) {
+    const existingInfo =
+      await this.prismaService.global_market_infos.findUnique({
+        where: { informationName: name },
+      })
+
+    if (existingInfo) {
+      return await this.prismaService.global_market_infos.update({
+        where: { informationName: name },
+        data: { informationValue: value, information24hChange: change },
+      })
+    } else {
+      return await this.prismaService.global_market_infos.create({
+        data: {
+          informationName: name,
+          informationValue: value,
+          information24hChange: change,
+        },
+      })
+    }
+  }
 }

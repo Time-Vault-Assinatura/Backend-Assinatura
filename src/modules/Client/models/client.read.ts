@@ -116,4 +116,14 @@ export class ClientReadModel {
       throw error
     }
   }
+
+  async getAllGlobalMarketInfo() {
+    try {
+      const result = await this.prismaService.global_market_infos.findMany()
+      return result
+    } catch (error) {
+      console.log(`erro ao buscar os dados do mercado global.`, error)
+      throw error
+    }
+  }
 }
