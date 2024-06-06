@@ -17,7 +17,7 @@ export class ReadProfitGraph {
         )
       }
 
-      return { statusCode: HttpStatus.OK, result }
+      return  result 
     } catch (error) {
       throw new HttpException(
         'Erro ao acessar os dados das criptomoedas',

@@ -34,7 +34,7 @@ export class UpdateVideoService {
         videoId,
         viewed,
       )
-      return { statusCode: HttpStatus.OK, result }
+      return  result 
     } catch (error) {
       throw new HttpException(
         'Erro ao atualizar status do video',
@@ -43,4 +43,3 @@ export class UpdateVideoService {
     }
   }
 }
-// vai para main

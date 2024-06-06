@@ -12,7 +12,7 @@ export class ReadVideoService {
       throw new HttpException('Nenhum video encontrado.', HttpStatus.NO_CONTENT)
     }
 
-    return { statusCode: HttpStatus.OK, allVideos }
+    return  allVideos 
   }
 
   async getVideosView() {
@@ -25,7 +25,6 @@ export class ReadVideoService {
       )
     }
 
-    return { statusCode: HttpStatus.OK, allVideosView }
+    return  allVideosView 
   }
 }
-// vai para main

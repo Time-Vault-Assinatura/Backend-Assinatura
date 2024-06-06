@@ -15,6 +15,7 @@ export class GetUpdateService {
           HttpStatus.NO_CONTENT,
         )
       }
+      return result
     } catch (error) {
       throw new HttpException(
         'Erro ao buscar atualizações.',

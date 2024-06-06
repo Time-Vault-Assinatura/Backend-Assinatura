@@ -15,7 +15,7 @@ export class UserDataService {
           HttpStatus.NO_CONTENT,
         )
       }
-      return { statusCode: HttpStatus.OK, userData }
+      return  userData 
     } catch (error) {
       throw new HttpException(
         'Erro ao buscar dados do usuário',

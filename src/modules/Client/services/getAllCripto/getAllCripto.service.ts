@@ -23,7 +23,7 @@ export class GetAllCriptoService {
         )
       }
 
-      return { statusCode: HttpStatus.OK, allCriptoDataFiltred }
+      return  allCriptoDataFiltred 
     } catch (error) {
       throw new HttpException(
         `Erro ao acessar os dados da carteira: ${wallet}`,

@@ -49,7 +49,7 @@ export class UpdateCriptoService {
         criptoDetails.id,
         updateData,
       )
-      return { statusCode: HttpStatus.OK, result }
+      return result 
     } catch (error) {
       console.error('Erro ao atualizar detalhes da criptomoeda:', error)
       throw new HttpException(
@@ -72,7 +72,7 @@ export class UpdateCriptoService {
         id,
         isVisible,
       )
-      return { statusCode: HttpStatus.OK, result }
+      return result 
     } catch (error) {
       console.error('Error updating crypto visibility:', error)
       throw new HttpException(
@@ -100,7 +100,7 @@ export class UpdateCriptoService {
 
     try {
       const result = await this.adminUpdateModel.updateWallet(id, wallet)
-      return { statusCode: HttpStatus.OK, result }
+      return  result 
     } catch (error) {
       console.error('Erro ao selecionar a carteira do ativo:', error)
       throw new HttpException(

@@ -15,6 +15,6 @@ export class ReadVideoService {
       )
     }
 
-    return { statusCode: HttpStatus.OK, allVideos }
+    return allVideos 
   }
 }

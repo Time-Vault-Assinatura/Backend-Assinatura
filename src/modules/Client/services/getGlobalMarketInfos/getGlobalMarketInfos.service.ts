@@ -16,7 +16,7 @@ export class GetGlobalMarketInfosService {
         )
       }
 
-      return { statusCode: HttpStatus.OK, result }
+      return  result 
     } catch (error) {
       throw new HttpException(
         `Erro ao buscar dados globais do mercado`,

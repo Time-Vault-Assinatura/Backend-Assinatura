@@ -15,6 +15,6 @@ export class ReadUserService {
       )
     }
 
-    return { statusCode: HttpStatus.OK, allFeedbacks }
+    return  allFeedbacks 
   }
 }
