@@ -102,19 +102,19 @@ export class ClientController {
     return await this.readVideoService.getVideosView()
   }
 
-  @UseGuards(AuthGuardUser)
+  //   @UseGuards(AuthGuardUser)
   @Get('get-all-updates')
   async getAllUpdates() {
     return await this.getUpdateService.getUpdate()
   }
 
-  @UseGuards(AuthGuardUser)
+  //   @UseGuards(AuthGuardUser)
   @Get('get-profitGraph-data')
   async getProfitGraphByWallet(wallet: Wallets) {
     return await this.readProfitGraph.getProfitGraphByWallet(wallet)
   }
 
-  @UseGuards(AuthGuardUser)
+  //   @UseGuards(AuthGuardUser)
   @Get('get-global-market-data')
   async getAllGlobalMarketInfos() {
     return await this.getGlobalMArketInfos.getAllGlobalMarketInfos()
