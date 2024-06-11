@@ -6,6 +6,7 @@ import { AuthModule } from './modules/Auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
 import { MailerModule } from '@nestjs-modules/mailer'
 import { WebhookModule } from './modules/Webhook/webhook.module'
+import { AppController } from './app.controller'
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { WebhookModule } from './modules/Webhook/webhook.module'
       },
     }),
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}

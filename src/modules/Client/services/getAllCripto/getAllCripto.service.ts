@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ClientReadModel } from '../../models/client.read'
 import { Wallets } from 'src/modules/Admin/DTO/wallet.dto'
 import { firstValueFrom } from 'rxjs'
@@ -12,28 +12,45 @@ export class GetAllCriptoService {
   ) {}
 
   async getAllVisibleCriptoData(wallet: Wallets) {
-    const allCriptoDataFiltred =
-      await this.clientReadModel.getAllCriptoDataFiltred(wallet)
+    try {
+      const allCriptoDataFiltred =
+        await this.clientReadModel.getAllCriptoDataFiltred(wallet)
 
-    if (allCriptoDataFiltred.length === 0) {
-      return 'Nenhum dado de criptomoeda encontrado sem campos nulos.'
+      if (allCriptoDataFiltred.length === 0) {
+        throw new HttpException(
+          'Nenhum dado de criptomoeda encontrado sem campos nulos.',
+          HttpStatus.NO_CONTENT,
+        )
+      }
+
+      return  allCriptoDataFiltred 
+    } catch (error) {
+      throw new HttpException(
+        `Erro ao acessar os dados da carteira: ${wallet}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
-
-    return allCriptoDataFiltred
   }
 
   public async calculateWalletRentability(wallet: Wallets) {
-    const criptoDatas =
-      await this.clientReadModel.getAllCriptoDataFiltred(wallet)
-    const totalInvested = criptoDatas.reduce(
-      (acc, cripto) => acc + parseFloat(cripto.valorInvestido),
-      0,
-    )
-    const rendimento = ((totalInvested - 2000) / 2000) * 100
+    try {
+      const criptoDatas =
+        await this.clientReadModel.getAllCriptoDataFiltred(wallet)
+      const totalInvested = criptoDatas.reduce(
+        (acc, cripto) => acc + parseFloat(cripto.valorInvestido),
+        0,
+      )
+      const rendimento = ((totalInvested - 2000) / 2000) * 100
 
-    return {
-      totalInvested,
-      rendimento,
+      return {
+        totalInvested,
+        rendimento,
+      }
+    } catch (error) {
+      throw new HttpException(
+        `Erro ao calcular o retorno da carteira: ${wallet}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 
@@ -60,7 +77,10 @@ export class GetAllCriptoService {
 
       return historicalData
     } catch (error) {
-      console.error('Error fetching cryptocurrency data:', error)
+      throw new HttpException(
+        `Error fetching cryptocurrency data:${error}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { AdminUpdateModel } from '../../models/admin.update'
 import { AdminReadModel } from '../../models/admin.read'
 
@@ -20,8 +20,21 @@ export class UpdateVideoService {
     bannerUrl?: string
     isVisible?: boolean
   }) {
-    // validação se já existe uma aula com esse nome
-    // validação se ja existe um video com mesma url
+    const existingVideoUrl = await this.adminReadModel.existsVideoUrl()
+    if (existingVideoUrl.includes(videoInfo.videoUrl)) {
+      throw new HttpException(
+        `O url '${videoInfo.videoUrl}' já existe.`,
+        HttpStatus.CONFLICT,
+      )
+    }
+
+    const existingClassNames = await this.adminReadModel.existsClassName()
+    if (existingClassNames.includes(videoInfo.className)) {
+      throw new HttpException(
+        `O nome da classe '${videoInfo.className}' já existe.`,
+        HttpStatus.CONFLICT,
+      )
+    }
 
     const validClassOrder = await this.adminReadModel.getClassOrderByModule(
       videoInfo.module,
@@ -37,12 +50,15 @@ export class UpdateVideoService {
       }
       const result = await this.adminUpdateModel.updateVideo(videoInfo)
 
-      return result
+      return {
+        statusCode: HttpStatus.OK,
+        result,
+      }
     } catch (error) {
-      console.error('erro desconhecido:', error)
-      throw new Error('um erro desconhecido ocorreu')
+      throw new HttpException(
+        'Falha ao atualizar dados do video.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 }
-
-// vai para main

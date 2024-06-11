@@ -16,6 +16,9 @@ import { Wallets } from '../Admin/DTO/wallet.dto'
 import { CreateUserService } from './services/createClientData/create.client.service'
 import { ReadVideoService } from './services/readVideo/read.video.service'
 import { UpdateVideoService } from './services/updateVideo/update.video.service'
+import { GetUpdateService } from './services/getUpdate/get.update.service'
+import { ReadProfitGraph } from './services/readProfitGraph/read.profitGraph.service'
+import { GetGlobalMarketInfosService } from './services/getGlobalMarketInfos/getGlobalMarketInfos.service'
 
 @Controller('user')
 export class ClientController {
@@ -25,6 +28,9 @@ export class ClientController {
     private readonly createUserService: CreateUserService,
     private readonly readVideoService: ReadVideoService,
     private readonly updateVideoService: UpdateVideoService,
+    private readonly getUpdateService: GetUpdateService,
+    private readonly readProfitGraph: ReadProfitGraph,
+    private readonly getGlobalMArketInfos: GetGlobalMarketInfosService,
   ) {}
 
   @UseGuards(AuthGuardUser)
@@ -94,5 +100,23 @@ export class ClientController {
   @Get('get-view')
   async getVideosView() {
     return await this.readVideoService.getVideosView()
+  }
+
+  //   @UseGuards(AuthGuardUser)
+  @Get('get-all-updates')
+  async getAllUpdates() {
+    return await this.getUpdateService.getUpdate()
+  }
+
+  //   @UseGuards(AuthGuardUser)
+  @Get('get-profitGraph-data')
+  async getProfitGraphByWallet(wallet: Wallets) {
+    return await this.readProfitGraph.getProfitGraphByWallet(wallet)
+  }
+
+  //   @UseGuards(AuthGuardUser)
+  @Get('get-global-market-data')
+  async getAllGlobalMarketInfos() {
+    return await this.getGlobalMArketInfos.getAllGlobalMarketInfos()
   }
 }

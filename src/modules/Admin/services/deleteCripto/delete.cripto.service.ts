@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { AdminDeleteModel } from '../../models/admin.delete'
 import { AdminUpdateModel } from '../../models/admin.update'
 
@@ -11,28 +11,53 @@ export class DeleteCriptoService {
 
   async deleteCripto(id: string) {
     try {
-      return await this.adminDeleteModel.deleteCripto(id)
+      const result = await this.adminDeleteModel.deleteCripto(id)
+      if (!result) {
+        throw new HttpException(
+          'Criptomoeda não encontrada.',
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      return { statusCode: HttpStatus.OK, result }
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new Error('Registro não encontrado.')
+        throw new HttpException(
+          'Criptomoeda não encontrada.',
+          HttpStatus.NOT_FOUND,
+        )
       }
-      throw new Error('Erro do Prisma ao deletar o registro.')
+      throw new HttpException(
+        'Erro ao deletar a criptomoeda.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 
   async deleteBuyAndSell(id: string) {
     try {
-      await this.adminDeleteModel.deleteBuyAndSell(id)
+      const result = await this.adminDeleteModel.deleteBuyAndSell(id)
+      if (!result) {
+        throw new HttpException(
+          'Compra e venda não encontrada.',
+          HttpStatus.NOT_FOUND,
+        )
+      }
       await this.adminUpdateModel.updateCriptoQuantity()
       return {
-        message: `A criptomoeda com id = ${id} , foi deletada com sucesso!`,
+        statusCode: HttpStatus.OK,
+        message: `A transação com id = ${id} foi deletada com sucesso!`,
       }
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new Error('Registro não encontrado.')
+        throw new HttpException(
+          'Compra e venda não encontrada.',
+          HttpStatus.NOT_FOUND,
+        )
       }
-      throw new Error('Erro do Prisma ao deletar o registro.')
+      throw new HttpException(
+        'Erro ao deletar a transação.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 }
-// vai para main

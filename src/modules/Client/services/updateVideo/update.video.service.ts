@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { ClientUpdateModel } from '../../models/client.update'
 import { ClientReadModel } from '../../models/client.read'
 
@@ -24,12 +29,17 @@ export class UpdateVideoService {
 
     // Atualizar a visualização do vídeo
     try {
-      await this.clientUpdateModel.updateVideoView(uuid, videoId, viewed)
+      const result = await this.clientUpdateModel.updateVideoView(
+        uuid,
+        videoId,
+        viewed,
+      )
+      return  result 
     } catch (error) {
-      console.error('Error updating video view status:', error)
-      throw new Error('Failed to update video view status.')
+      throw new HttpException(
+        'Erro ao atualizar status do video',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
     }
   }
 }
-// vai para main
-

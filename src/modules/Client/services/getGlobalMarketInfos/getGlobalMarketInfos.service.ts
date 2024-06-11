@@ -1,24 +1,25 @@
-// user-data.service.ts
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ClientReadModel } from '../../models/client.read'
 
 @Injectable()
-export class UserDataService {
+export class GetGlobalMarketInfosService {
   constructor(private readonly clientReadModel: ClientReadModel) {}
 
-  async getUserData(email: string) {
+  async getAllGlobalMarketInfos() {
     try {
-      const userData = await this.clientReadModel.getUserData(email)
-      if (!userData) {
+      const result = await this.clientReadModel.getAllGlobalMarketInfo()
+
+      if (result.length === 0) {
         throw new HttpException(
-          'Usuário não encontrado.',
+          'Nenhum dado de criptomoeda encontrado sem campos nulos.',
           HttpStatus.NO_CONTENT,
         )
       }
-      return  userData 
+
+      return  result 
     } catch (error) {
       throw new HttpException(
-        'Erro ao buscar dados do usuário',
+        `Erro ao buscar dados globais do mercado`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       )
     }

@@ -89,4 +89,41 @@ export class ClientReadModel {
       throw error
     }
   }
+
+  async getUpdate() {
+    try {
+      const result = await this.prismaService.update.findMany()
+      return result
+    } catch (error) {
+      console.log('erro ao buscar atualizações', error)
+      throw error
+    }
+  }
+
+  async getProfitGraphByWallet(wallet: Wallets) {
+    try {
+      const result = await this.prismaService.profit_graph.findMany({
+        where: {
+          wallet,
+        },
+      })
+      return result
+    } catch (error) {
+      console.log(
+        `Erro ao buscar os dados para o grafico filtrado pela carteira ${wallet}`,
+        error,
+      )
+      throw error
+    }
+  }
+
+  async getAllGlobalMarketInfo() {
+    try {
+      const result = await this.prismaService.global_market_infos.findMany()
+      return result
+    } catch (error) {
+      console.log(`erro ao buscar os dados do mercado global.`, error)
+      throw error
+    }
+  }
 }

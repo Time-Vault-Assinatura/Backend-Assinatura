@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { AdminReadModel } from '../../models/admin.read'
 
 @Injectable()
@@ -9,9 +9,12 @@ export class ReadUserService {
     const allFeedbacks = await this.adminReadModel.getAllFeedbacks()
 
     if (allFeedbacks.length === 0) {
-      return 'Nenhum feedback encontrado'
+      throw new HttpException(
+        'Ainda não existe nenhum feedback',
+        HttpStatus.NO_CONTENT,
+      )
     }
 
-    return allFeedbacks
+    return  allFeedbacks 
   }
 }

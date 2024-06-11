@@ -24,6 +24,9 @@ import { CreateVideoService } from './services/createVideo/create.video.service'
 import { UpdateVideoService } from './services/updateVideo/update.video.service'
 import { DeleteVideoService } from './services/deleteVideo/delete.video.service'
 import { ReadVideoService } from './services/readVideos/read.video.service'
+import { CreateUpdateService } from './services/createUpdate/create.update.service'
+import { DeleteUpdateService } from './services/deleteUpdate/delete.update.service'
+import { UpdateUpdateService } from './services/updateUpdate/update.update.service'
 
 @Controller('admin')
 export class AdminController {
@@ -38,6 +41,9 @@ export class AdminController {
     private readonly updateVideoService: UpdateVideoService,
     private readonly deleteVideoService: DeleteVideoService,
     private readonly readVideoService: ReadVideoService,
+    private readonly createUpdateService: CreateUpdateService,
+    private readonly deleteUpdateService: DeleteUpdateService,
+    private readonly updateUpdateService: UpdateUpdateService,
   ) {}
 
   @UseGuards(AuthGuardAdmin)
@@ -189,5 +195,32 @@ export class AdminController {
   @Get('get-all-videos')
   async getAllVideos() {
     return await this.readVideoService.getAllVideos()
+  }
+
+  @UseGuards(AuthGuardAdmin)
+  @Post('add-update')
+  async addUpdate(@Body() body: { update: string; updateDate: string }) {
+    return await this.createUpdateService.createUpdate(
+      body.update,
+      body.updateDate,
+    )
+  }
+
+  @UseGuards(AuthGuardAdmin)
+  @Delete('delete-update')
+  async DeleteUpdate(@Body() body: { id: number }) {
+    return await this.deleteUpdateService.DeleteUpdate(body.id)
+  }
+
+  @UseGuards(AuthGuardAdmin)
+  @Patch('update-update')
+  async Updateupdate(
+    @Body() body: { id: number; update: string; updateDate: string },
+  ) {
+    return await this.updateUpdateService.updateUpdate(
+      body.id,
+      body.update,
+      body.updateDate,
+    )
   }
 }

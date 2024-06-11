@@ -24,8 +24,10 @@ export class AdminDeleteModel {
         where: { id },
       })
     } catch (error) {
-      console.error(error)
-      throw error
+      if (error.code === 'P2025') {
+        throw new Error('Registro não encontrado.')
+      }
+      throw new Error('Erro do Prisma ao deletar o registro.')
     }
   }
 
@@ -35,8 +37,23 @@ export class AdminDeleteModel {
         where: { id },
       })
     } catch (error) {
-      console.error(error)
-      throw error
+      if (error.code === 'P2025') {
+        throw new Error('Video não encontrado.')
+      }
+      throw new Error('Erro do Prisma ao deletar o video.')
+    }
+  }
+
+  async DeleteUpdate(id: number) {
+    try {
+      return await this.prismaService.update.delete({
+        where: { id },
+      })
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new Error('Video não encontrado.')
+      }
+      throw new Error('Erro do Prisma ao deletar o video.')
     }
   }
 }

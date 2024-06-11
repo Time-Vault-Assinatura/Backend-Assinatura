@@ -1,25 +1,25 @@
-// user-data.service.ts
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ClientReadModel } from '../../models/client.read'
 
 @Injectable()
-export class UserDataService {
+export class GetUpdateService {
   constructor(private readonly clientReadModel: ClientReadModel) {}
 
-  async getUserData(email: string) {
+  async getUpdate() {
     try {
-      const userData = await this.clientReadModel.getUserData(email)
-      if (!userData) {
+      const result = await this.clientReadModel.getUpdate()
+
+      if (result.length === 0) {
         throw new HttpException(
-          'Usuário não encontrado.',
+          'Nenhuma atualização encontrada.',
           HttpStatus.NO_CONTENT,
         )
       }
-      return  userData 
+      return result
     } catch (error) {
       throw new HttpException(
-        'Erro ao buscar dados do usuário',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Erro ao buscar atualizações.',
+        HttpStatus.NO_CONTENT,
       )
     }
   }

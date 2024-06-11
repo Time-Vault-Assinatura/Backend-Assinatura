@@ -1,24 +1,26 @@
-// user-data.service.ts
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ClientReadModel } from '../../models/client.read'
+import { Wallets } from '../../DTO/wallet.dto'
 
 @Injectable()
-export class UserDataService {
+export class ReadProfitGraph {
   constructor(private readonly clientReadModel: ClientReadModel) {}
 
-  async getUserData(email: string) {
+  async getProfitGraphByWallet(wallet: Wallets) {
     try {
-      const userData = await this.clientReadModel.getUserData(email)
-      if (!userData) {
+      const result = await this.clientReadModel.getProfitGraphByWallet(wallet)
+
+      if (result.length === 0) {
         throw new HttpException(
-          'Usuário não encontrado.',
+          'Nenhum dado encontrado.',
           HttpStatus.NO_CONTENT,
         )
       }
-      return  userData 
+
+      return  result 
     } catch (error) {
       throw new HttpException(
-        'Erro ao buscar dados do usuário',
+        'Erro ao acessar os dados das criptomoedas',
         HttpStatus.INTERNAL_SERVER_ERROR,
       )
     }
